@@ -1,9 +1,16 @@
+#PLAN
+#Write the stockmanagement,along with the subclasses
+#Code stock alaerts for low stock and expiry
+#Add a section for value calculations as well as transaction history
+
 import tkinter as tk
+from tkinter import messagebox
 
-class SmartStockUI:
-    def __init__(self,root):
-        self.root=root
-        self.root.title("SmartStock Terminal")
+root=tk.Tk()
+root.title("SmartStock")
+root.geometry("420x480")
 
-self.root.geometry("1000x600")
-self.root.configure(bg= "#121212")
+tk.Label(
+    root, 
+    text="Add a new item",
+    font=("Arial",11)).pack(pady=(15,5))
