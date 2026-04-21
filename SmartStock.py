@@ -14,3 +14,22 @@ tk.Label(
     root, 
     text="Add a new item",
     font=("Arial",11)).pack(pady=(15,5))
+
+#User input
+stock_entry = tk.Entry(root, width=32, font=("Arial", 12))
+stock_entry.pack(pady=5)
+#Status Label
+status=tk.Label(root, text="", font=("Arial",10))
+status.pack()
+
+def add_stock():
+    stock = stock_entry.get().strip()
+    if not stock:
+        status.config(text="Please enter a stock item name", fg= "red")
+        stock_entry.focus_set()
+        return
+    stock_list.insert(tk.END, stock)
+    stock_entry.delete(0, tk.END)
+    stock_entry.focus_set()
+    status.config(text="Stock Added!", fg="green")
+    
