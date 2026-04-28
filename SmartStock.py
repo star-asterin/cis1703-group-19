@@ -40,7 +40,7 @@ add_button.pack(pady=5)
 stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
 stock_list.pack(pady=10)
 
-#Function to remove selected stock from the list
+#Function to remove selected stock from the list (Angel)
 def remove_stock():
     selected = stock_list.curselection()
     if not selected:
