@@ -4,7 +4,7 @@
 #Add a section for value calculations as well as transaction history
 
 import tkinter as tk
-from tkinter import messagebox
+
 
 root=tk.Tk()
 root.title("SmartStock")
@@ -33,3 +33,29 @@ def add_stock():
     stock_entry.focus_set()
     status.config(text="Stock Added!", fg="green")
     
+add_button = tk.Button(root, text="Add Stock", command=add_stock)
+add_button.pack(pady=5)
+#Listbox to display stock items
+stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
+stock_list.pack(pady=10)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+root.mainloop()
