@@ -55,21 +55,29 @@ def remove_stock():
 remove_button = tk.Button(root, text= "Remove stock", command=remove_stock)    
 remove_button.pack(pady=5)
 
+#function for editing stock here
 
 
 
+#function to display low stock warning here
 
 
 
+#function to display warning for expiring stock here
 
 
 
+#function for total cost of stock here
 
 
 
+#function for transaction history logs here
 
 
 
+#separate section for the 'health' of the stock summary here
 
 
+
+#main loop to run the SmartSTock application to view stock.
 root.mainloop()
