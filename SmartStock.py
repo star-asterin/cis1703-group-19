@@ -40,7 +40,20 @@ add_button.pack(pady=5)
 stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
 stock_list.pack(pady=10)
 
-
+#Function to remove selected stock from the list
+def remove_stock():
+    selected = stock_list.curselection()
+    if not selected:
+        status.config(text="Please select a stock item to remove from the list.",
+                      fg= "red")
+        return
+    stock_list.delete(selected)
+    status.config(text="Stock has been removed from the list.",
+                  fg="green")
+    
+#Button to remove selected stock from list
+remove_button = tk.Button(root, text= "Remove stock", command=remove_stock)    
+remove_button.pack(pady=5)
 
 
 
