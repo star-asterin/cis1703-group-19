@@ -21,7 +21,7 @@ stock_entry.pack(pady=5)
 #Status Label
 status=tk.Label(root, text="", font=("Arial",10))
 status.pack()
-
+#Stock add function with an alert for empty input box- Angel
 def add_stock():
     stock = stock_entry.get().strip()
     if not stock:
@@ -32,11 +32,12 @@ def add_stock():
     stock_entry.delete(0, tk.END)
     stock_entry.focus_set()
     status.config(text="Stock Added!", fg="green")
+#Button for adding stock to the list.
     
 add_button = tk.Button(root, text="Add Stock", command=add_stock)
 add_button.pack(pady=5)
 #Listbox to display stock items
-stock-list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
+stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
 stock_list.pack(pady=10)
 
 
