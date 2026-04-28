@@ -36,7 +36,7 @@ def add_stock():
 add_button = tk.Button(root, text="Add Stock", command=add_stock)
 add_button.pack(pady=5)
 #Listbox to display stock items
-stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
+stock-list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
 stock_list.pack(pady=10)
 
 
