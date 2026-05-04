@@ -43,6 +43,7 @@ add_button = tk.Button(btn_frame, text="Add Stock", command=add_stock).grid(row=
 
 #Listbox to display stock items
 stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
+stock_list.pack(pady=10)
 
 
 #Function to remove selected stock from the list (Angel)
