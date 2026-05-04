@@ -89,11 +89,6 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 
 
 
-#Formatting of UI
-
-
-
-
 
 
 #main loop to run the SmartSTock application to view stock.
