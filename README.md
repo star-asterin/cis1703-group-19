@@ -9,11 +9,11 @@ Group members (alphabetical order):
 
 •	Konstantin Karaychev 26555891 – Lead Architect – rollrkostr
 
+•	Haillie Tiger Lyons 26617137 – QA Lead – haisakataiga
+
 •	Angel Prus 26454289 – UI/UX Designer (Team Leader) – star-asterin
 
 •	Isaac Quartermaine 26548470 – QA Lead – IsaacIPLoF
-
-•	Haillie Tiger Lyons 26617137 – QA Lead – haisakataiga
 
 
 instructions go here
