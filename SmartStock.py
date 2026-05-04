@@ -21,6 +21,10 @@ stock_entry.pack(pady=5)
 #Status Label
 status=tk.Label(root, text="", font=("Arial",10))
 status.pack()
+
+btn_frame = tk.Frame(root)
+btn_frame.pack(pady=5)
+
 #Stock add function with an alert for empty input box- Angel
 def add_stock():
     stock = stock_entry.get().strip()
@@ -32,13 +36,14 @@ def add_stock():
     stock_entry.delete(0, tk.END)
     stock_entry.focus_set()
     status.config(text="Stock Added!", fg="green")
+   
 #Button for adding stock to the list.
     
-add_button = tk.Button(root, text="Add Stock", command=add_stock)
-add_button.pack(pady=5)
+add_button = tk.Button(btn_frame, text="Add Stock", command=add_stock).grid(row=0, column=0, padx=3)
+
 #Listbox to display stock items
 stock_list = tk.Listbox(root, width=40, height=10, font=("Arial", 12))
-stock_list.pack(pady=10)
+
 
 #Function to remove selected stock from the list (Angel)
 def remove_stock():
@@ -52,11 +57,9 @@ def remove_stock():
                   fg="green")
     
 #Button to remove selected stock from list
-remove_button = tk.Button(root, text= "Remove stock", command=remove_stock)    
-remove_button.pack(pady=5)
+remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock) .grid(row=0, column=1, padx=3)  
 
 #function for editing stock here
-
 
 
 
@@ -86,6 +89,9 @@ remove_button.pack(pady=5)
 
 
 #Formatting of UI
+
+
+
 
 
 
