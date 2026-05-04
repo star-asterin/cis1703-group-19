@@ -59,12 +59,13 @@ remove_button.pack(pady=5)
 
 
 
-#function to display low stock warning here
 
+#function to display low stock warning here
+# angel suggests utilising the status.config 
 
 
 #function to display warning for expiring stock here
-
+#angel suggests utilising the status.config 
 
 
 #function for total cost of stock here
@@ -76,6 +77,15 @@ remove_button.pack(pady=5)
 
 
 #separate section for the 'health' of the stock summary here
+
+
+
+
+
+
+
+
+#Formatting of UI
 
 
 
