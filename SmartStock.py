@@ -1,5 +1,5 @@
 #PLAN
-#Write the stockmanagement,along with the subclasses
+#Write the stockmanagement
 #Code stock alaerts for low stock and expiry
 #Add a section for value calculations as well as transaction history
 
