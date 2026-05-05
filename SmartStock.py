@@ -4,6 +4,7 @@
 #Add a section for value calculations as well as transaction history
 
 import tkinter as tk
+from tkinter import filedialog
 import json
 
 root=tk.Tk()
@@ -136,7 +137,21 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 # file persistence and logging - Kostya
 
 def saveToFile():
-    pass
+    invList = list(stock_list.get(0, tk.END))
+    
+    saveLocation = filedialog.asksaveasfilename(
+        defaultextension=".json",
+        filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+        title="Save Inventory to File"
+    )
+
+    if len(invList) == 0:
+        status.config(text="Inventory is currently empty. Please add stock.", fg= "red")
+        return
+
+    invData = json.dumps(invList, indent=4)
+    with open("inventory.json", "w") as inv:
+        inv.write(invData)
 
 def loadFromFile():
     pass
