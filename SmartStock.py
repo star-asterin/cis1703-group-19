@@ -21,20 +21,44 @@ stock_entry.pack(pady=5)
 #Status Label
 status=tk.Label(root, text="", font=("Arial",10))
 status.pack()
+# base class
+class Product:
+    def __init__(self, id, name, price, quantity):
+        self.id = id
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+
+#subclass - inherits all attributes from base class, plus attributes unique to this class
+class Perishable(Product):
+    def __init__(self, expiryDate, storageTemp, id, name, price, quantity):
+        super().__init__(id, name, price, quantity)
+        self.expiryDate = expiryDate
+        self.storageTemp = storageTemp
+
+#subclass
+class Electronic(Product):
+    def __init__(self, warrantyPeriod, powerUsage, id, name, price, quantity):
+        super().__init__(id, name, price, quantity)
+        self.warrantyPeriod = warrantyPeriod
+        self.powerUsage = powerUsage
 
 btn_frame = tk.Frame(root)
 btn_frame.pack(pady=5)
 
 #Stock add function with an alert for empty input box- Angel
 def add_stock():
-    stock = stock_entry.get().strip()
-    if not stock:
+    item_name = stock_entry.get().strip()
+    #converted to valid OOP code
+    stock = Product("TEMPORARY_ID",item_name,0,0) #please finish this function - Thomas
+    if not item_name:
         status.config(text="Please enter a stock item name", fg= "red")
         stock_entry.focus_set()
         return
-    stock_list.insert(tk.END, stock)
-    stock_entry.delete(0, tk.END)
-    stock_entry.focus_set()
+    stock_list.insert(tk.END, (f"{stock.id},{stock.name},{stock.price},{stock.quantity}"))
+    #stock_list.insert(tk.END, stock)
+    #stock_entry.delete(0, tk.END)
+    #stock_entry.focus_set()
     status.config(text="Stock Added!", fg="green")
    
 #Button for adding stock to the list.
