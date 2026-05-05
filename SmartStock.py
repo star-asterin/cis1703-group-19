@@ -73,6 +73,14 @@ def add_stock():
         status.config(text="Please enter a stock item name", fg= "red")
         stock_name.focus_set()
         return
+    if not item_price:
+        status.config(text="Please enter a stock item price.", fg= "red")
+        stock_price.focus_set()
+        return
+    if not item_quantity:
+        status.config(text="Please enter a stock item quantity.", fg= "red")
+        stock_quantity.focus_set()
+        return
     stock_list.insert(tk.END, (f"{stock.id},{stock.name},{stock.price},{stock.quantity}"))
     #stock_list.insert(tk.END, stock)
     #stock_name.delete(0, tk.END)
