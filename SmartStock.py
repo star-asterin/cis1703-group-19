@@ -133,7 +133,7 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 #separate section for the 'health' of the stock summary here
 
 
-# file persistence - Kostya
+# file persistence and logging - Kostya
 
 def saveToFile():
     pass
@@ -141,15 +141,12 @@ def saveToFile():
 def loadFromFile():
     pass
 
+def checkLogs():
+    pass
+
 save_button = tk.Button(btn_frame, text= "Save to file", command=saveToFile) .grid(row=2, column=0, padx=3)
 load_button = tk.Button(btn_frame, text= "Load from file", command=loadFromFile) .grid(row=2, column=1, padx=3)
-
-# logging - Kostya
-
-
-
-
-
+check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs) .grid(row=3, column=0, padx=3)
 
 
 #main loop to run the SmartSTock application to view stock.
