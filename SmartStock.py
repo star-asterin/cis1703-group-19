@@ -16,8 +16,12 @@ tk.Label(
     font=("Arial",11)).pack(pady=(15,5))
 
 #User input
-stock_entry = tk.Entry(root, width=32, font=("Arial", 12))
-stock_entry.pack(pady=5)
+stock_name = tk.Entry(root, width=32, font=("Arial", 12))
+stock_price = tk.Entry(root, width=32, font=("Arial", 12))
+stock_quantity = tk.Entry(root, width=32, font=("Arial", 12))
+stock_name.pack(pady=5)
+stock_price.pack(pady=5)
+stock_quantity.pack(pady=5)
 #Status Label
 status=tk.Label(root, text="", font=("Arial",10))
 status.pack()
@@ -48,17 +52,17 @@ btn_frame.pack(pady=5)
 
 #Stock add function with an alert for empty input box- Angel
 def add_stock():
-    item_name = stock_entry.get().strip()
+    item_name = stock_name.get().strip()
     #converted to valid OOP code
     stock = Product("TEMPORARY_ID",item_name,0,0) #please finish this function - Thomas
     if not item_name:
         status.config(text="Please enter a stock item name", fg= "red")
-        stock_entry.focus_set()
+        stock_name.focus_set()
         return
     stock_list.insert(tk.END, (f"{stock.id},{stock.name},{stock.price},{stock.quantity}"))
     #stock_list.insert(tk.END, stock)
-    #stock_entry.delete(0, tk.END)
-    #stock_entry.focus_set()
+    #stock_name.delete(0, tk.END)
+    #stock_name.focus_set()
     status.config(text="Stock Added!", fg="green")
    
 #Button for adding stock to the list.
