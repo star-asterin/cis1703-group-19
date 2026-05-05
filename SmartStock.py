@@ -65,8 +65,10 @@ btn_frame.pack(pady=5)
 #Stock add function with an alert for empty input box- Angel
 def add_stock():
     item_name = stock_name.get().strip()
+    item_price = stock_price.get().strip()
+    item_quantity = stock_quantity.get().strip()
     #converted to valid OOP code
-    stock = Product("TEMPORARY_ID",item_name,0,0) #please finish this function - Thomas
+    stock = Product("TEMPORARY_ID",item_name,item_price,item_quantity) #please finish this function - Thomas
     if not item_name:
         status.config(text="Please enter a stock item name", fg= "red")
         stock_name.focus_set()
