@@ -4,7 +4,7 @@
 #Add a section for value calculations as well as transaction history
 
 import tkinter as tk
-
+import json
 
 root=tk.Tk()
 root.title("SmartStock")
@@ -133,7 +133,18 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 #separate section for the 'health' of the stock summary here
 
 
+# file persistence - Kostya
 
+def saveToFile():
+    pass
+
+def loadFromFile():
+    pass
+
+save_button = tk.Button(btn_frame, text= "Save to file", command=saveToFile) .grid(row=2, column=0, padx=3)
+load_button = tk.Button(btn_frame, text= "Load from file", command=loadFromFile) .grid(row=2, column=1, padx=3)
+
+# logging - Kostya
 
 
 
