@@ -19,9 +19,21 @@ tk.Label(
 stock_name = tk.Entry(root, width=32, font=("Arial", 12))
 stock_price = tk.Entry(root, width=32, font=("Arial", 12))
 stock_quantity = tk.Entry(root, width=32, font=("Arial", 12))
-stock_name.pack(pady=5)
-stock_price.pack(pady=5)
-stock_quantity.pack(pady=5)
+tk.Label(
+    root, 
+    text="Name of item",
+    font=("Arial",11)).pack(pady=(3))
+stock_name.pack(pady=3)
+tk.Label(
+    root, 
+    text="Price of item",
+    font=("Arial",11)).pack(pady=(3))
+stock_price.pack(pady=3)
+tk.Label(
+    root, 
+    text="Quatity of item",
+    font=("Arial",11)).pack(pady=(3))
+stock_quantity.pack(pady=3)
 #Status Label
 status=tk.Label(root, text="", font=("Arial",10))
 status.pack()
