@@ -45,11 +45,16 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
+    
+    def low_stock_warning(self):
+        if int(self.quantity) <= 5:
+            stock_list.itemconfig(tk.ACTIVE, bg="red")
 
 #subclass - inherits all attributes from base class, plus attributes unique to this class
 class Perishable(Product):
     def __init__(self, expiryDate, storageTemp, id, name, price, quantity):
         super().__init__(id, name, price, quantity)
+        super().low_stock_warning()
         self.expiryDate = expiryDate
         self.storageTemp = storageTemp
 
@@ -57,6 +62,7 @@ class Perishable(Product):
 class Electronic(Product):
     def __init__(self, warrantyPeriod, powerUsage, id, name, price, quantity):
         super().__init__(id, name, price, quantity)
+        super().low_stock_warning()
         self.warrantyPeriod = warrantyPeriod
         self.powerUsage = powerUsage
 
@@ -83,6 +89,7 @@ def add_stock():
         stock_quantity.focus_set()
         return
     stock_list.insert(tk.END, (f"{stock.id},{stock.name},{stock.price},{stock.quantity}"))
+    stock.low_stock_warning()
     #stock_list.insert(tk.END, stock)
     #stock_name.delete(0, tk.END)
     #stock_name.focus_set()
