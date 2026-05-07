@@ -6,6 +6,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import json
+from datetime import datetime
 
 root=tk.Tk()
 root.title("SmartStock")
@@ -94,7 +95,10 @@ def add_stock():
     #stock_name.delete(0, tk.END)
     #stock_name.focus_set()
     status.config(text="Stock Added!", fg="green")
-   
+
+# Add event to logs
+    writeLog(f"Added item: {item_name}")
+
 #Button for adding stock to the list.
     
 add_button = tk.Button(btn_frame, text="Add Stock", command=add_stock).grid(row=0, column=0, padx=3)
@@ -114,6 +118,9 @@ def remove_stock():
     stock_list.delete(selected)
     status.config(text="Stock has been removed from the list.",
                   fg="green")
+
+# Add event to logs
+    writeLog(f"Removed item: {item_name}")
     
 #Button to remove selected stock from list
 remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock) .grid(row=0, column=1, padx=3)  
@@ -174,6 +181,9 @@ def saveToFile(event=None):
     with open(curSavePath, "w") as inv:
         inv.write(invData)
     status.config(text="Inventory saved to [curSavePath] in program folder...", fg="green")
+# Add event to logs
+    writeLog(f"Saved inventory to [{curSavePath}]")
+
 
 def saveAsFile(event=None):
     """
@@ -198,6 +208,9 @@ def saveAsFile(event=None):
         filetypes=[("JSON Files", "*.json"), ("All files", "*.*")],
         title="Save inventory as. . ."
     )
+# Adds log event
+    writeLog(f"Saved inventory as [{curSavePath}]")
+
 # This resets the button label back to Save Inventory, avoids a visual bug
     save_button.config(text="Save inventory")
 
@@ -234,6 +247,10 @@ def loadDefaultInventory(event=None):
         status.config(text="Default inventory loaded from program folder", fg="green")
     except FileNotFoundError:
         status.config(text="Failed to load default inventory. Please Save one first.)", fg="red")
+# Add event to logs
+    writeLog("Loaded default inventory [inventorySave.json]")
+
+
 
 def loadFromFile():
     global curSavePath
@@ -263,9 +280,58 @@ def loadFromFile():
         status.config(text=f"Inventory loaded from chosen folder. [{loadLocation}]", fg="green")
     except (FileNotFoundError, json.JSONDecodeError):
         status.config(text="Failed to load inventory. Inventory may be corrupted, or chosen file is not valid JSON.)", fg="red")
+# Add event to logs
+    writeLog(f"Loaded inventory from [{loadLocation}]")
+
+# Attempts to load logs from previous session
+try:
+    with open("inventoryLogs.json", "r") as logFile:
+        logs = json.load(logFile)
+except (FileNotFoundError, json.JSONDecodeError):
+    logs = []
+
+def writeLog(action):
+    """
+    Appends a timestamped action to the log and saves it to disk.
+    """
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = {"timestamp": timestamp, "action": action}
+    logs.append(entry)
+    with open("inventoryLogs.json", "w") as logFile:
+        json.dump(logs, logFile, indent=4)
 
 def checkLogs():
-    pass
+    """
+    Opens a new window displaying the full log w/ timestamps.
+    """
+    log_window = tk.Toplevel(root)
+    log_window.title("Transaction History")
+    log_window.geometry("520x400")
+
+    tk.Label(log_window, text="Transaction History", font=("Arial", 12, "bold")).pack(pady=(10, 5))
+
+    # Scrollable text box
+    frame = tk.Frame(log_window)
+    frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+    scrollbar = tk.Scrollbar(frame)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+    log_box = tk.Text(frame, yscrollcommand=scrollbar.set, state=tk.DISABLED, wrap=tk.WORD)
+    log_box.pack(fill=tk.BOTH, expand=True)
+    scrollbar.config(command=log_box.yview)
+
+    # Populate log box
+    log_box.config(state=tk.NORMAL)
+    if not logs:
+        log_box.insert(tk.END, "No transactions recorded yet.")
+    else:
+        for entry in logs:
+            log_box.insert(tk.END, f"[{entry['timestamp']}]  {entry['action']}\n")
+    log_box.config(state=tk.DISABLED)
+    log_box.see(tk.END)  # scroll to most recent
+
+    tk.Button(log_window, text="Close", command=log_window.destroy).pack(pady=8)
 
 # Creates the Save button, separately assigns it to grid and binds function
 save_button = tk.Button(btn_frame, text= "Save inventory")

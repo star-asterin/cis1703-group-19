@@ -1,0 +1,38 @@
+[
+    {
+        "timestamp": "2026-05-07 15:53:12",
+        "action": "Added item: guh"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:12",
+        "action": "Added item: guh"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:12",
+        "action": "Added item: guh"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:12",
+        "action": "Added item: guh"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:18",
+        "action": "Added item: guh"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:19",
+        "action": "Saved inventory to [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:23",
+        "action": "Loaded inventory from [/Users/kostyamac/Documents/1738 1 1 wow crazy.json]"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:27",
+        "action": "Saved inventory to [/Users/kostyamac/Documents/1738 1 1 wow crazy.json]"
+    },
+    {
+        "timestamp": "2026-05-07 15:53:30",
+        "action": "Saved inventory as [/Users/kostyamac/Documents/1738 1 1 wow crazy.json]"
+    }
+]
