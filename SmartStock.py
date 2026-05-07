@@ -172,6 +172,7 @@ def add_stock():
     #Now the only purpose of add_stock is to create a new object, using data from the "add_stock_window" function
     #Core attributes
     item_type = opt.get().strip()
+    global item_name
     item_name = stock_name.get().strip()
     item_price = stock_price.get().strip()
     item_quantity = stock_quantity.get().strip()
@@ -187,6 +188,12 @@ def add_stock():
         return
     if not item_quantity:
         status.config(text="Please enter a stock item quantity.", fg= "red")
+        stock_quantity.focus_set()
+        return
+    try:
+        int(item_quantity)
+    except ValueError:
+        status.config(text="Please enter a whole number for stock quantity.", fg="red")
         stock_quantity.focus_set()
         return
     #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
