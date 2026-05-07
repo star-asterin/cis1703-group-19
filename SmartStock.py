@@ -140,8 +140,16 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 
 #separate section for the 'health' of the stock summary here
 
-
+#
+#
+#
 # file persistence and logging - Kostya
+#
+#
+#
+
+# Variable that tracks the current working inventory to prevent mis-overwrites
+curSavePath = "inventorySave.json"
 
 def saveToFile(event=None):
     """
@@ -163,9 +171,9 @@ def saveToFile(event=None):
 
 # Converts list type inventory to json, writes to inventory.json
     invData = json.dumps(invList, indent=4)
-    with open("inventorySave.json", "w") as inv:
+    with open(curSavePath, "w") as inv:
         inv.write(invData)
-    status.config(text="Inventory saved to [inventorySave.json] in program folder...", fg="green")
+    status.config(text="Inventory saved to [curSavePath] in program folder...", fg="green")
 
 def saveAsFile(event=None):
     """
@@ -174,6 +182,8 @@ def saveAsFile(event=None):
 
     Only triggered if Save button is clicked while holding the SHIFT button.
     """
+    global curSavePath
+
  # Converts the tkinter stock_list to an actual list type inventory
     invList = list(stock_list.get(0, tk.END))
 
@@ -195,14 +205,64 @@ def saveAsFile(event=None):
     if not saveLocation:
         return
 
+# Updates current working inventory, Save function will now overwrite that instead of the default one
+    curSavePath = saveLocation
+
 # Converts list type inventory to json, writes to inventory.json
     invData = json.dumps(invList, indent=4)
-    with open(saveLocation, "w") as inv:
+    with open(curSavePath, "w") as inv:
         inv.write(invData)
     status.config(text=f"Inventory saved to [{saveLocation}]", fg="green")
 
+def loadDefaultInventory(event=None):
+    global curSavePath
+
+    if event and (event.state & 0x1):
+        loadFromFile()
+        return
+    
+    try:
+# Load default inventory file
+        with open("inventorySave.json", "r") as inv:
+            items = json.load(inv)
+        stock_list.delete(0, tk.END)
+        for item in items:
+            stock_list.insert(tk.END, item)
+
+# Reset working inventory to default one
+        curSavePath = "inventorySave.json"
+        status.config(text="Default inventory loaded from program folder", fg="green")
+    except FileNotFoundError:
+        status.config(text="Failed to load default inventory. Please Save one first.)", fg="red")
+
 def loadFromFile():
-    pass
+    global curSavePath
+# Load From prompt
+    loadLocation = filedialog.askopenfilename(
+        filetypes=[("JSON Files", "*.json"), ("All Files", "*.*")],
+        title="Load inventory from . . ."
+    )
+
+# Reset label, fixes a UI bug with holding SHIFT
+    load_button.config(text="Load Inventory")
+
+    if not loadLocation:
+        return
+
+    try:
+# Load chosen inventory file
+        with open(loadLocation, "r") as inv:
+            items = json.load(inv)
+        stock_list.delete(0, tk.END)
+        for item in items:
+            stock_list.insert(tk.END, item)
+
+# Change working inventory to loaded one, so Save function overwrites this instead of Default inv
+        curSavePath = loadLocation
+
+        status.config(text=f"Inventory loaded from chosen folder. [{loadLocation}]", fg="green")
+    except (FileNotFoundError, json.JSONDecodeError):
+        status.config(text="Failed to load inventory. Inventory may be corrupted, or chosen file is not valid JSON.)", fg="red")
 
 def checkLogs():
     pass
@@ -213,16 +273,23 @@ save_button.grid(row=2, column=0, padx=3)
 save_button.bind("<Button-1>", saveToFile)
 
 # Creates Load button, separately assigns to grid
-load_button = tk.Button(btn_frame, text= "Load from file", command=loadFromFile)
+load_button = tk.Button(btn_frame, text= "Load inventory")
 load_button.grid(row=2, column=1, padx=3)
+load_button.bind("<Button-1>", loadDefaultInventory)
 
 # Creates "Check Logs" button, separately assigns to grid
 check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs)
 check_logs.grid(row=3, column=0, padx=3)
 
-# This binds the Shift key press event to the whole window with a lambda function, swaps Save w/ Save As
-root.bind("<KeyPress-Shift_L>", lambda e: save_button.config(text="Save inventory as. . ."))
-root.bind("<KeyRelease-Shift_L>", lambda e: save_button.config(text="Save inventory"))
-
-#main loop to run the SmartSTock application to view stock.
+# This binds the Shift key press event to the whole window with a lambda function, swaps Save and Load
+# with their respective "as..." versions
+root.bind("<KeyPress-Shift_L>",   lambda e: (save_button.config(text="Save inventory as. . ."),
+                                             load_button.config(text="Load inventory from. . .")))
+root.bind("<KeyPress-Shift_R>",   lambda e: (save_button.config(text="Save inventory as. . ."),
+                                             load_button.config(text="Load inventory from. . .")))
+root.bind("<KeyRelease-Shift_L>", lambda e: (save_button.config(text="Save inventory"),
+                                             load_button.config(text="Load inventory")))
+root.bind("<KeyRelease-Shift_R>", lambda e: (save_button.config(text="Save inventory"),
+                                             load_button.config(text="Load inventory")))
+# main loop to run the SmartStock application to view stock.
 root.mainloop()
