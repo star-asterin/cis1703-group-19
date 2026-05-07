@@ -143,22 +143,63 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 
 # file persistence and logging - Kostya
 
-def saveToFile():
-    invList = list(stock_list.get(0, tk.END))
-    
-    saveLocation = filedialog.asksaveasfilename(
-        defaultextension=".json",
-        filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-        title="Save Inventory to File"
-    )
+def saveToFile(event=None):
+    """
+    Default save function - on click it saves the current inventory to the program folder
+    as "inventorySave.json", overwriting the previous save.
+    """
+# Event handler triggers "Save As" function instead of "Save" if Shift is held
+    if event and (event.state & 0x1):
+        saveAsFile()
+        return
 
+ # Converts the tkinter stock_list to an actual list type inventory
+    invList = list(stock_list.get(0, tk.END))
+
+# Empty inventory error
     if len(invList) == 0:
         status.config(text="Inventory is currently empty. Please add stock.", fg= "red")
         return
 
+# Converts list type inventory to json, writes to inventory.json
     invData = json.dumps(invList, indent=4)
-    with open("inventory.json", "w") as inv:
+    with open("inventorySave.json", "w") as inv:
         inv.write(invData)
+    status.config(text="Inventory saved to [inventorySave.json] in program folder...", fg="green")
+
+def saveAsFile(event=None):
+    """
+    Function that opens a dialog window, allowing the user to browse their filesystem and save
+    the current inventory to a separate .json file
+
+    Only triggered if Save button is clicked while holding the SHIFT button.
+    """
+ # Converts the tkinter stock_list to an actual list type inventory
+    invList = list(stock_list.get(0, tk.END))
+
+# Empty inventory error
+    if len(invList) == 0:
+        status.config(text="Inventory is currently empty. Please add stock.", fg= "red")
+        return
+
+# Asks user to set a save location in new window, defaults to JSON file format
+    saveLocation = filedialog.asksaveasfilename(
+        defaultextension=".json",
+        filetypes=[("JSON Files", "*.json"), ("All files", "*.*")],
+        title="Save inventory as. . ."
+    )
+# This resets the button label back to Save Inventory, avoids a visual bug
+    save_button.config(text="Save inventory")
+
+# Cancels operation if saveLocation isn't set (user closed Save As window)
+    if not saveLocation:
+        return
+
+# Converts list type inventory to json, writes to inventory.json
+    invData = json.dumps(invList, indent=4)
+    with open(saveLocation, "w") as inv:
+        inv.write(invData)
+    status.config(text=f"Inventory saved to [{saveLocation}]", fg="green")
 
 def loadFromFile():
     pass
@@ -166,10 +207,22 @@ def loadFromFile():
 def checkLogs():
     pass
 
-save_button = tk.Button(btn_frame, text= "Save to file", command=saveToFile) .grid(row=2, column=0, padx=3)
-load_button = tk.Button(btn_frame, text= "Load from file", command=loadFromFile) .grid(row=2, column=1, padx=3)
-check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs) .grid(row=3, column=0, padx=3)
+# Creates the Save button, separately assigns it to grid and binds function
+save_button = tk.Button(btn_frame, text= "Save inventory")
+save_button.grid(row=2, column=0, padx=3)
+save_button.bind("<Button-1>", saveToFile)
 
+# Creates Load button, separately assigns to grid
+load_button = tk.Button(btn_frame, text= "Load from file", command=loadFromFile)
+load_button.grid(row=2, column=1, padx=3)
+
+# Creates "Check Logs" button, separately assigns to grid
+check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs)
+check_logs.grid(row=3, column=0, padx=3)
+
+# This binds the Shift key press event to the whole window with a lambda function, swaps Save w/ Save As
+root.bind("<KeyPress-Shift_L>", lambda e: save_button.config(text="Save inventory as. . ."))
+root.bind("<KeyRelease-Shift_L>", lambda e: save_button.config(text="Save inventory"))
 
 #main loop to run the SmartSTock application to view stock.
 root.mainloop()
