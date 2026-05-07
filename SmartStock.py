@@ -6,6 +6,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import json
+from datetime import datetime
 
 root=tk.Tk()
 root.title("SmartStock")
@@ -225,7 +226,10 @@ def add_stock():
 
     stock.low_stock_warning()
     status.config(text="Stock Added!", fg="green")
-   
+
+# Add event to logs
+    writeLog(f"Added item: {item_name}")
+
 #Button for adding stock to the list.
     
 add_window_button = tk.Button(btn_frame, text="Add Stock", command=add_stock_window).grid(row=0, column=0, padx=3)
@@ -245,6 +249,9 @@ def remove_stock():
     stock_list.delete(selected)
     status.config(text="Stock has been removed from the list.",
                   fg="green")
+
+# Add event to logs
+    writeLog(f"Removed item: {item_name}")
     
 #Button to remove selected stock from list
 remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock) .grid(row=0, column=1, padx=3)  
@@ -271,36 +278,215 @@ remove_button = tk.Button(btn_frame, text= "Remove stock", command=remove_stock)
 
 #separate section for the 'health' of the stock summary here
 
-
+#
+#
+#
 # file persistence and logging - Kostya
+#
+#
+#
 
-def saveToFile():
+# Variable that tracks the current working inventory to prevent mis-overwrites
+curSavePath = "inventorySave.json"
+
+def saveToFile(event=None):
+    """
+    Default save function - on click it saves the current inventory to the program folder
+    as "inventorySave.json", overwriting the previous save.
+    """
+# Event handler triggers "Save As" function instead of "Save" if Shift is held
+    if event and (event.state & 0x1):
+        saveAsFile()
+        return
+
+ # Converts the tkinter stock_list to an actual list type inventory
     invList = list(stock_list.get(0, tk.END))
-    
-    saveLocation = filedialog.asksaveasfilename(
-        defaultextension=".json",
-        filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-        title="Save Inventory to File"
-    )
 
+# Empty inventory error
     if len(invList) == 0:
         status.config(text="Inventory is currently empty. Please add stock.", fg= "red")
         return
 
+# Converts list type inventory to json, writes to inventory.json
     invData = json.dumps(invList, indent=4)
-    with open("inventory.json", "w") as inv:
+    with open(curSavePath, "w") as inv:
         inv.write(invData)
+    status.config(text="Inventory saved to [curSavePath] in program folder...", fg="green")
+# Add event to logs
+    writeLog(f"Saved inventory to [{curSavePath}]")
+
+
+def saveAsFile(event=None):
+    """
+    Function that opens a dialog window, allowing the user to browse their filesystem and save
+    the current inventory to a separate .json file
+
+    Only triggered if Save button is clicked while holding the SHIFT button.
+    """
+    global curSavePath
+
+ # Converts the tkinter stock_list to an actual list type inventory
+    invList = list(stock_list.get(0, tk.END))
+
+# Empty inventory error
+    if len(invList) == 0:
+        status.config(text="Inventory is currently empty. Please add stock.", fg= "red")
+        return
+
+# Asks user to set a save location in new window, defaults to JSON file format
+    saveLocation = filedialog.asksaveasfilename(
+        defaultextension=".json",
+        filetypes=[("JSON Files", "*.json"), ("All files", "*.*")],
+        title="Save inventory as. . ."
+    )
+# Adds log event
+    writeLog(f"Saved inventory as [{curSavePath}]")
+
+# This resets the button label back to Save Inventory, avoids a visual bug
+    save_button.config(text="Save inventory")
+
+# Cancels operation if saveLocation isn't set (user closed Save As window)
+    if not saveLocation:
+        return
+
+# Updates current working inventory, Save function will now overwrite that instead of the default one
+    curSavePath = saveLocation
+
+# Converts list type inventory to json, writes to inventory.json
+    invData = json.dumps(invList, indent=4)
+    with open(curSavePath, "w") as inv:
+        inv.write(invData)
+    status.config(text=f"Inventory saved to [{saveLocation}]", fg="green")
+
+def loadDefaultInventory(event=None):
+    global curSavePath
+
+    if event and (event.state & 0x1):
+        loadFromFile()
+        return
+    
+    try:
+# Load default inventory file
+        with open("inventorySave.json", "r") as inv:
+            items = json.load(inv)
+        stock_list.delete(0, tk.END)
+        for item in items:
+            stock_list.insert(tk.END, item)
+
+# Reset working inventory to default one
+        curSavePath = "inventorySave.json"
+        status.config(text="Default inventory loaded from program folder", fg="green")
+    except FileNotFoundError:
+        status.config(text="Failed to load default inventory. Please Save one first.)", fg="red")
+# Add event to logs
+    writeLog("Loaded default inventory [inventorySave.json]")
+
+
 
 def loadFromFile():
-    pass
+    global curSavePath
+# Load From prompt
+    loadLocation = filedialog.askopenfilename(
+        filetypes=[("JSON Files", "*.json"), ("All Files", "*.*")],
+        title="Load inventory from . . ."
+    )
+
+# Reset label, fixes a UI bug with holding SHIFT
+    load_button.config(text="Load Inventory")
+
+    if not loadLocation:
+        return
+
+    try:
+# Load chosen inventory file
+        with open(loadLocation, "r") as inv:
+            items = json.load(inv)
+        stock_list.delete(0, tk.END)
+        for item in items:
+            stock_list.insert(tk.END, item)
+
+# Change working inventory to loaded one, so Save function overwrites this instead of Default inv
+        curSavePath = loadLocation
+
+        status.config(text=f"Inventory loaded from chosen folder. [{loadLocation}]", fg="green")
+    except (FileNotFoundError, json.JSONDecodeError):
+        status.config(text="Failed to load inventory. Inventory may be corrupted, or chosen file is not valid JSON.)", fg="red")
+# Add event to logs
+    writeLog(f"Loaded inventory from [{loadLocation}]")
+
+# Attempts to load logs from previous session
+try:
+    with open("inventoryLogs.json", "r") as logFile:
+        logs = json.load(logFile)
+except (FileNotFoundError, json.JSONDecodeError):
+    logs = []
+
+def writeLog(action):
+    """
+    Appends a timestamped action to the log and saves it to disk.
+    """
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = {"timestamp": timestamp, "action": action}
+    logs.append(entry)
+    with open("inventoryLogs.json", "w") as logFile:
+        json.dump(logs, logFile, indent=4)
 
 def checkLogs():
-    pass
+    """
+    Opens a new window displaying the full log w/ timestamps.
+    """
+    log_window = tk.Toplevel(root)
+    log_window.title("Transaction History")
+    log_window.geometry("520x400")
 
-save_button = tk.Button(btn_frame, text= "Save to file", command=saveToFile) .grid(row=2, column=0, padx=3)
-load_button = tk.Button(btn_frame, text= "Load from file", command=loadFromFile) .grid(row=2, column=1, padx=3)
-check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs) .grid(row=3, column=0, padx=3)
+    tk.Label(log_window, text="Transaction History", font=("Arial", 12, "bold")).pack(pady=(10, 5))
 
+    # Scrollable text box
+    frame = tk.Frame(log_window)
+    frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
-#main loop to run the SmartSTock application to view stock.
+    scrollbar = tk.Scrollbar(frame)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+    log_box = tk.Text(frame, yscrollcommand=scrollbar.set, state=tk.DISABLED, wrap=tk.WORD)
+    log_box.pack(fill=tk.BOTH, expand=True)
+    scrollbar.config(command=log_box.yview)
+
+    # Populate log box
+    log_box.config(state=tk.NORMAL)
+    if not logs:
+        log_box.insert(tk.END, "No transactions recorded yet.")
+    else:
+        for entry in logs:
+            log_box.insert(tk.END, f"[{entry['timestamp']}]  {entry['action']}\n")
+    log_box.config(state=tk.DISABLED)
+    log_box.see(tk.END)  # scroll to most recent
+
+    tk.Button(log_window, text="Close", command=log_window.destroy).pack(pady=8)
+
+# Creates the Save button, separately assigns it to grid and binds function
+save_button = tk.Button(btn_frame, text= "Save inventory")
+save_button.grid(row=2, column=0, padx=3)
+save_button.bind("<Button-1>", saveToFile)
+
+# Creates Load button, separately assigns to grid
+load_button = tk.Button(btn_frame, text= "Load inventory")
+load_button.grid(row=2, column=1, padx=3)
+load_button.bind("<Button-1>", loadDefaultInventory)
+
+# Creates "Check Logs" button, separately assigns to grid
+check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs)
+check_logs.grid(row=3, column=0, padx=3)
+
+# This binds the Shift key press event to the whole window with a lambda function, swaps Save and Load
+# with their respective "as..." versions
+root.bind("<KeyPress-Shift_L>",   lambda e: (save_button.config(text="Save inventory as. . ."),
+                                             load_button.config(text="Load inventory from. . .")))
+root.bind("<KeyPress-Shift_R>",   lambda e: (save_button.config(text="Save inventory as. . ."),
+                                             load_button.config(text="Load inventory from. . .")))
+root.bind("<KeyRelease-Shift_L>", lambda e: (save_button.config(text="Save inventory"),
+                                             load_button.config(text="Load inventory")))
+root.bind("<KeyRelease-Shift_R>", lambda e: (save_button.config(text="Save inventory"),
+                                             load_button.config(text="Load inventory")))
+# main loop to run the SmartStock application to view stock.
 root.mainloop()
