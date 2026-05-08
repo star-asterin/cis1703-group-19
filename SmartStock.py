@@ -173,6 +173,10 @@ def add_stock_window():
 
     DefaultOptions(add_window).pack()
 
+    global add_status
+    add_status = tk.Label(add_window, text="", font=("Arial",10))
+    add_status.pack()
+
     add_button = tk.Button(add_window, text="Add Stock", command=add_stock).pack(side="bottom",pady=3)
     
     #Runs the rest of the add_stock function on button click, then closes the window
@@ -190,21 +194,21 @@ def add_stock():
     item_quantity = stock_quantity.get().strip()
     
     if not item_name:
-        status.config(text="Please enter a stock item name", fg= "red")
+        add_status.config(text="Please enter a stock item name", fg= "red")
         stock_name.focus_set()
         return
     if not item_price:
-        status.config(text="Please enter a stock item price.", fg= "red")
+        add_status.config(text="Please enter a stock item price.", fg= "red")
         stock_price.focus_set()
         return
     if not item_quantity:
-        status.config(text="Please enter a stock item quantity.", fg= "red")
+        add_status.config(text="Please enter a stock item quantity.", fg= "red")
         stock_quantity.focus_set()
         return
     try:
         int(item_quantity)
     except ValueError:
-        status.config(text="Please enter a whole number for stock quantity.", fg="red")
+        add_status.config(text="Please enter a whole number for stock quantity.", fg="red")
         stock_quantity.focus_set()
         return
     #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
@@ -217,11 +221,11 @@ def add_stock():
         item_expiry = stock_expiry.get().strip()
         item_temp = stock_temp.get().strip()
         if not item_expiry:
-            status.config(text="Please enter a stock item expiry date.", fg= "red")
+            add_status.config(text="Please enter a stock item expiry date.", fg= "red")
             stock_expiry.focus_set()
             return
         if not item_temp:
-            status.config(text="Please enter a storage temperature.", fg= "red")
+            add_status.config(text="Please enter a storage temperature.", fg= "red")
             stock_temp.focus_set()
             return
         stock = Perishable(item_id,item_name,item_price,item_quantity,item_expiry,item_temp)
@@ -232,11 +236,11 @@ def add_stock():
         item_warranty = stock_warranty.get().strip()
         power_usage = stock_power.get().strip()
         if not item_warranty:
-            status.config(text="Please enter a stock item warranty period.", fg= "red")
+            add_status.config(text="Please enter a stock item warranty period.", fg= "red")
             stock_warranty.focus_set()
             return
         if not power_usage:
-            status.config(text="Please enter a stock item power usage.", fg= "red")
+            add_status.config(text="Please enter a stock item power usage.", fg= "red")
             stock_power.focus_set()
             return
         stock = Electronic(item_id,item_name,item_price,item_quantity,item_warranty,power_usage)
@@ -245,7 +249,7 @@ def add_stock():
     counter.increment()
 
     stock.low_stock_warning()
-    status.config(text="Stock Added!", fg="green")
+    add_status.config(text="Stock Added!", fg="green")
 
 # Add event to logs
     writeLog(f"Added item: {item_name}")
