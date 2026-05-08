@@ -206,7 +206,11 @@ def add_stock():
         stock_quantity.focus_set()
         return
     try:
-        int(item_quantity)
+        item_quantity = int(item_quantity)
+        if item_quantity < 0:
+            status.config(text="Please enter a quantity of 0 or larger.", fg="red")
+            stock_price.focus_set()
+            return
     except ValueError:
         add_status.config(text="Please enter a whole number for stock quantity.", fg="red")
         stock_quantity.focus_set()
@@ -215,9 +219,14 @@ def add_stock():
     #Only allows item_price to be up to 2DP, raises an error if not input correctly
     try:
         item_price = float(item_price)
-        assert item_price == (round(item_price, 2))  
+        if item_price >= 0:
+            assert item_price == (round(item_price, 2))
+        else: 
+            status.config(text="Please enter a price value of 0 or larger.", fg="red")
+            stock_price.focus_set()
+            return
     except AssertionError:
-        status.config(text="Please only enter a price with up to 2 DP.", fg="red")
+        status.config(text="Please only enter a price with up to 2 decimal points.", fg="red")
         stock_price.focus_set()
         return
     except ValueError:
