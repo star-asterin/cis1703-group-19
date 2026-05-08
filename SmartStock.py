@@ -211,6 +211,24 @@ def add_stock():
         add_status.config(text="Please enter a whole number for stock quantity.", fg="red")
         stock_quantity.focus_set()
         return
+
+    #Only allows item_price to be up to 2DP, raises an error if not input correctly
+    try:
+        item_price = float(item_price)
+        assert item_price == (round(item_price, 2))  
+    except AssertionError:
+        status.config(text="Please only enter a price with up to 2 DP.", fg="red")
+        stock_price.focus_set()
+        return
+    except ValueError:
+        status.config(text="Please only enter an integer/decimal number for the price.", fg="red")
+        stock_price.focus_set()
+        return
+    except:
+        status.config(text="The price entered is not possible.", fg="red")
+        stock_price.focus_set()
+        return
+        
     #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
     if item_type == "Default Product":
         stock = Product(item_id,item_name,item_price,item_quantity)
