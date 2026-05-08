@@ -1,6 +1,6 @@
 #PLAN
 #Write the stockmanagement
-#Code stock alaerts for low stock and expiry
+#Code stock alerts for low stock and expiry
 #Add a section for value calculations as well as transaction history
 
 import tkinter as tk
@@ -254,9 +254,14 @@ def add_stock():
     
 add_window_button = tk.Button(btn_frame, text="Add Stock", command=add_stock_window).grid(row=0, column=0, padx=3)
 
+scrollbar = tk.Scrollbar(root, orient="vertical")
+scrollbar.pack(side="right", fill="y")
+
 #Listbox to display stock items
-stock_list = tk.Listbox(root, width=40, height=10, font=default_font)
+stock_list = tk.Listbox(root, width=40, height=10, font=default_font, yscrollcommand=scrollbar.set)
 stock_list.pack(pady=10)
+
+scrollbar.config(command=stock_list.yview)
 
 
 #Function to remove selected stock from the list (Angel)
