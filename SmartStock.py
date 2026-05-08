@@ -46,6 +46,17 @@ class Electronic(Product):
         self.warrantyPeriod = warrantyPeriod
         self.powerUsage = powerUsage
 
+#counter for incrementing product ID when a new item is created
+class Counter:
+    def __init__(self):
+        self.value = 0
+    
+    def increment(self):
+        self.value += 1
+        return self.value
+
+counter = Counter()
+
 btn_frame = tk.Frame(root)
 btn_frame.pack(pady=5)
 
@@ -172,12 +183,12 @@ def add_stock():
     #Now the only purpose of add_stock is to create a new object, using data from the "add_stock_window" function
     #Core attributes
     item_type = opt.get().strip()
+    item_id = f"{counter.value:03}"
     global item_name
     item_name = stock_name.get().strip()
     item_price = stock_price.get().strip()
     item_quantity = stock_quantity.get().strip()
     
-     #please finish this function - Thomas
     if not item_name:
         status.config(text="Please enter a stock item name", fg= "red")
         stock_name.focus_set()
@@ -198,8 +209,8 @@ def add_stock():
         return
     #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
     if item_type == "Default Product":
-        stock = Product("TEMPORARY_ID",item_name,item_price,item_quantity)
-        stock_list.insert(tk.END, (f"Product, {stock.id}, {stock.name}, {stock.price}, {stock.quantity}"))
+        stock = Product(item_id,item_name,item_price,item_quantity)
+        stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, {stock.price}, {stock.quantity}"))
 
     elif item_type == "Perishable Product":
         #Perishable attributes
@@ -213,8 +224,8 @@ def add_stock():
             status.config(text="Please enter a storage temperature.", fg= "red")
             stock_temp.focus_set()
             return
-        stock = Perishable("TEMPORARY_ID",item_name,item_price,item_quantity,item_expiry,item_temp)
-        stock_list.insert(tk.END, (f"Perishable, {stock.id}, {stock.name}, {stock.price}, {stock.quantity}, {stock.expiryDate}, {stock.storageTemp}"))
+        stock = Perishable(item_id,item_name,item_price,item_quantity,item_expiry,item_temp)
+        stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, {stock.price}, {stock.quantity}, {stock.expiryDate}, {stock.storageTemp}"))
 
     elif item_type == "Electronic Product":
         #Electronic attributes
@@ -228,8 +239,10 @@ def add_stock():
             status.config(text="Please enter a stock item power usage.", fg= "red")
             stock_power.focus_set()
             return
-        stock = Electronic("TEMPORARY_ID",item_name,item_price,item_quantity,item_warranty,power_usage)
-        stock_list.insert(tk.END, (f"Electronic, {stock.id}, {stock.name}, {stock.price}, {stock.quantity}, {stock.warrantyPeriod}, {stock.powerUsage}"))
+        stock = Electronic(item_id,item_name,item_price,item_quantity,item_warranty,power_usage)
+        stock_list.insert(tk.END, (f"Electronic: {stock.id}, {stock.name}, {stock.price}, {stock.quantity}, {stock.warrantyPeriod}, {stock.powerUsage}"))
+    
+    counter.increment()
 
     stock.low_stock_warning()
     status.config(text="Stock Added!", fg="green")
