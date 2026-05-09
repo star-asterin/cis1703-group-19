@@ -11,7 +11,7 @@ from datetime import datetime
 
 root=tk.Tk()
 root.title("SmartStock")
-root.geometry("420x480")
+root.geometry("420x540")
 
 default_font = ("Arial", 12)
 label_font = ("Arial", 11)
@@ -430,8 +430,8 @@ def calculate_total_cost():
     total_price = 0
     item_list = list(stock_list.get(0, tk.END))
     for item in item_list:
-        if "Product: " in item:
-            newstring = item[8:]
+        if ": " in item:
+            newstring = item[1:]
             newlist = str(newstring).split(", ")
             item_price = newlist[2]
             item_price1 = item_price[1:]
