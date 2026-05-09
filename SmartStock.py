@@ -379,40 +379,12 @@ def remove_stock():
 # Add event to logs
     writeLog(f"Removed item: {item_name}")
 
+# Function for editing stock here
 def edit_stock():
     pass
 
-#Button to remove selected stock from list
-
-#function for editing stock here
-
-
-
-#function to display low stock warning here
-# angel suggests utilising the status.config 
-
-
-#function to display warning for expiring stock here
-#angel suggests utilising the status.config 
-
-
-#function for total cost of stock here
-
-
-
-#function for transaction history logs here
-
-
-
-#separate section for the 'health' of the stock summary here
-
-#
-#
-#
 # file persistence and logging - Kostya
-#
-#
-#
+
 
 # Variable that tracks the current working inventory to prevent mis-overwrites
 curSavePath = "inventorySave.json"
@@ -508,7 +480,6 @@ def loadDefaultInventory(event=None):
         status.config(text="Failed to load default inventory. Please Save one first.)", foreground="red")
 # Add event to logs
     writeLog("Loaded default inventory [inventorySave.json]")
-
 
 
 def loadFromFile():
@@ -622,5 +593,105 @@ root.bind("<KeyRelease-Shift_L>", lambda e: (save_button.config(text="Save inven
                                              load_button.config(text="Load inventory",width=20)))
 root.bind("<KeyRelease-Shift_R>", lambda e: (save_button.config(text="Save inventory"),
                                              load_button.config(text="Load inventory",width=20)))
+
+# Health report / dashboard funcsion
+
+def show_health_report():
+    """
+    On call, generates a new window with quick health indicators
+    """
+    # Get all items currently in the listbox as a list
+    itemsList = list(stock_list.get(0, tk.END))
+    itemsListCount = len(itemsList)
+
+    # Variables and counters for the report
+    lowStockCount = 0
+    totalValue = 0.0
+    lowStockCountList = []
+    perishablesCount = 0
+    defaultsCount = 0
+    electronicsCount = 0
+    category2valueMap = {} # Maps each item name to the total stock value for that item
+
+    for item in itemsList:
+        try:
+            parts = item.split(", ")
+            itemType = parts[0].split(":")[0]
+            itemName = parts[1].strip()
+            price = float(parts[2])
+            quantity = int(parts[3])
+
+            # Calculate total value for this item (price * quantity)
+            itemValue = price * quantity
+            totalValue += itemValue
+
+
+            # Add to the appropriate type counter
+            if itemType == "Perishable":
+                perishablesCount += 1
+            elif itemType == "Electronic":
+                electronicsCount += 1
+            else:
+                defaultsCount += 1
+
+            # Accumulate value per item name for the breakdown section
+            category2valueMap[itemName] = category2valueMap.get(itemName, 0) + itemValue
+
+            # If quantity is 5 or below, flag as low stock
+            if quantity <= 5:
+                lowStockCount += 1
+                lowStockCountList.append(itemName)
+
+        except (IndexError, ValueError):
+            # Skip any entries that can't be parsed cleanly
+            pass
+
+    # Sjummon the report popup window
+    healthReportWindow = tk.Toplevel(root)
+    healthReportWindow.title("Inventory At A Glance")
+    healthReportWindow.geometry("350x550")
+
+    # Report title 4 window
+    tk.Label(healthReportWindow, text="Inventory Summary", font=("Arial", 12, "bold")).pack(pady=10)
+
+    # DISPLAY total item count
+    tk.Label(healthReportWindow, text=f"Total Items: {itemsListCount}", font=("Arial", 11)).pack(pady=(5, 0))
+
+    # Show percentage breakdown by product type if there are anyit
+    if itemsListCount > 0:
+        percentagePerishables = (perishablesCount / itemsListCount) * 100
+        percentageElectronics = (electronicsCount / itemsListCount) * 100
+        percentageDefaults = (defaultsCount / itemsListCount) * 100
+        tk.Label(healthReportWindow,
+                 text=f"  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic  |  {percentageDefaults:.1f}% Regular",
+                 font=("Arial", 10), fg="gray").pack(pady=(0, 5))
+
+    # Show low stock count in red if any items are low, black otherwise
+    lowStockLabelColor = "red" if lowStockCount > 0 else "black"
+    tk.Label(healthReportWindow, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), fg=lowStockLabelColor).pack(pady=(5, 0))
+
+    # If there are low stock items, list each one by name
+    if lowStockCountList:
+        tk.Label(healthReportWindow, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
+        for name in lowStockCountList:
+            tk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), fg="red").pack()
+
+    # Show the total combined stock value
+    tk.Label(healthReportWindow, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
+
+    # Show a per-item value breakdown sorted from highest to lowest value
+    if totalValue > 0 and category2valueMap:
+        tk.Label(healthReportWindow, text="Value breakdown:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
+        for name, val in sorted(category2valueMap.itemsList(), key=lambda x: x[1], reverse=True):
+            # Calculate what percentage of total value this item represents
+            percentage = (val / totalValue) * 100
+            tk.Label(healthReportWindow, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
+                     font=("Arial", 10)).pack()
+
+
+# Button that opens the health report window
+health_button = tk.Button(btn_frame, text="Health Report", command=show_health_report)
+health_button.grid(row=3, column=1, padx=3)
+
 # main loop to run the SmartStock application to view stock.
 root.mainloop()
