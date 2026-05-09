@@ -120,8 +120,14 @@ def add_stock_window():
                 font=label_font
             ).pack(pady=3)
             global stock_temp
-            stock_temp = tk.Entry(self, width=32, font=default_font)
-            stock_temp.pack(pady=3)
+            stock_temp = tk.Entry(self, width=16, font=default_font)
+            stock_temp.pack(pady=3,side=tk.LEFT)
+            global temp_value
+            temp_value = tk.StringVar(value="Celsius (°C)")
+            temp_options = ("Celsius (°C)","Fahrenheit (°F)")
+            temp_unit = tk.OptionMenu(self, temp_value, *temp_options)
+            temp_unit.config(width=16)
+            temp_unit.pack(pady=3,side=tk.RIGHT)
 
     class ElectronicOptions(tk.Frame):
         def __init__(self, parent):
@@ -186,6 +192,14 @@ def add_stock_window():
     add_window.mainloop()
 
 def add_stock():
+
+    def change_temp_unit(selected):
+        if selected == "Fahrenheit (°F)":
+            unit = "°F"
+        else:
+            unit = "°C"
+        return unit
+    
     #Now the only purpose of add_stock is to create a new object, using data from the "add_stock_window" function
     #Core attributes
     item_type = opt.get().strip()
@@ -239,16 +253,17 @@ def add_stock():
         status.config(text="The price entered is not possible.", fg="red")
         stock_price.focus_set()
         return
-        
+
     #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
     if item_type == "Default Product":
         stock = Product(item_id,item_name,item_price,item_quantity)
-        stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, {stock.price}, {stock.quantity}"))
+        stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, £{stock.price:.2f}, {stock.quantity}"))
 
     elif item_type == "Perishable Product":
         #Perishable attributes
         item_expiry = stock_expiry.get().strip()
         item_temp = stock_temp.get().strip()
+        temp_unit = change_temp_unit(temp_value.get())
         if not item_expiry:
             add_status.config(text="Please enter a stock item expiry date.", fg= "red")
             stock_expiry.focus_set()
@@ -258,7 +273,7 @@ def add_stock():
             stock_temp.focus_set()
             return
         stock = Perishable(item_id,item_name,item_price,item_quantity,item_expiry,item_temp)
-        stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, {stock.price}, {stock.quantity}, {stock.expiryDate}, {stock.storageTemp}"))
+        stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, £{stock.price:.2f}, {stock.quantity}, {stock.expiryDate}, {stock.storageTemp}{temp_unit}"))
 
     elif item_type == "Electronic Product":
         #Electronic attributes
@@ -273,7 +288,7 @@ def add_stock():
             stock_power.focus_set()
             return
         stock = Electronic(item_id,item_name,item_price,item_quantity,item_warranty,power_usage)
-        stock_list.insert(tk.END, (f"Electronic: {stock.id}, {stock.name}, {stock.price}, {stock.quantity}, {stock.warrantyPeriod}, {stock.powerUsage}"))
+        stock_list.insert(tk.END, (f"Electronic: {stock.id}, {stock.name}, £{stock.price:.2f}, {stock.quantity}, {stock.warrantyPeriod}, {stock.powerUsage}"))
     
     counter.increment()
 
