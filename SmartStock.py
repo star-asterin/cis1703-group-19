@@ -290,7 +290,7 @@ def add_stock():
                 
             #Expiry date validation
             try:
-                item_expiry = item expiry.split("/")
+                item_expiry = item_expiry.split("/")
                 item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
                 #^^^
             except:
