@@ -561,7 +561,7 @@ def checkLogs():
     log_box.config(state=tk.DISABLED)
     log_box.see(tk.END)  # scroll to most recent
 
-    ttk.Button(log_window, text="Close", command=log_window.destroy).pack(pady=8)
+    ttk.Button(log_window, text="Close", command=log_window.destroy).pack(pady=3)
 
 edit_button = ttk.Button(btn_frame, text="Edit stock", command=edit_stock, width=20).grid(row=0, column=1, padx=3)
 remove_button = ttk.Button(btn_frame, text= "Remove stock", command=remove_stock, width=20) .grid(row=1, column=0, padx=3)  
@@ -596,7 +596,7 @@ root.bind("<KeyRelease-Shift_R>", lambda e: (save_button.config(text="Save inven
 
 # Health report / dashboard funcsion
 
-def show_health_report():
+def summonHealthReport():
     """
     On call, generates a new window with quick health indicators
     """
@@ -618,8 +618,8 @@ def show_health_report():
             parts = item.split(", ")
             itemType = parts[0].split(":")[0]
             itemName = parts[1].strip()
-            price = float(parts[2])
-            quantity = int(parts[3])
+            price = float(parts[2].replace("£", ""))
+            quantity = int(parts[3].replace("x", ""))
 
             # Calculate total value for this item (price * quantity)
             itemValue = price * quantity
@@ -682,15 +682,17 @@ def show_health_report():
     # Show a per-item value breakdown sorted from highest to lowest value
     if totalValue > 0 and category2valueMap:
         tk.Label(healthReportWindow, text="Value breakdown:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
-        for name, val in sorted(category2valueMap.itemsList(), key=lambda x: x[1], reverse=True):
+        for name, val in sorted(category2valueMap.items(), key=lambda x: x[1], reverse=True):
             # Calculate what percentage of total value this item represents
             percentage = (val / totalValue) * 100
             tk.Label(healthReportWindow, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
                      font=("Arial", 10)).pack()
+                     
+    ttk.Button(healthReportWindow, text="DESTROY REPORT", command=healthReportWindow.destroy).pack(pady=3)
 
 
 # Button that opens the health report window
-health_button = tk.Button(btn_frame, text="Health Report", command=show_health_report)
+health_button = tk.Button(btn_frame, text="Health Report", command=summonHealthReport)
 health_button.grid(row=3, column=1, padx=3)
 
 # main loop to run the SmartStock application to view stock.
