@@ -258,10 +258,21 @@ def add_stock():
             stock_price.focus_set()
             return
 
+        try: #try/except loop to ensure item quantity entered cannot be negative or anything other than an integer - HTL
+            item_quantity = int(item_quantity)
+            if item_quantity < 0:
+                add_status.config(text="Please enter a quantity of 0 or larger.", fg="red")
+                stock_price.focus_set()
+                return
+        except ValueError:
+            add_status.config(text="Please enter a whole number for stock quantity.", fg="red")
+            stock_quantity.focus_set()
+            return
+
         #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
         if item_type == "Default Product":
             stock = Product(item_id,item_name,item_price,item_quantity)
-            stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, £{stock.price:.2f}, {stock.quantity}"))
+            stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}"))
 
         elif item_type == "Perishable Product":
             #Perishable attributes
@@ -277,22 +288,51 @@ def add_stock():
                 stock_temp.focus_set()
                 return
             stock = Perishable(item_id,item_name,item_price,item_quantity,item_expiry,item_temp)
-            stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, £{stock.price:.2f}, {stock.quantity}, {stock.expiryDate}, {stock.storageTemp}{temp_unit}"))
+            stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}, {stock.expiryDate}, {stock.storageTemp}{temp_unit}"))
 
         elif item_type == "Electronic Product":
             #Electronic attributes
             item_warranty = stock_warranty.get().strip()
             power_usage = stock_power.get().strip()
             if not item_warranty:
-                add_status.config(text="Please enter a stock item warranty period.", foreground= "red")
+                add_status.config(text="Please enter a stock item warranty period in months.", fg= "red")
                 stock_warranty.focus_set()
                 return
             if not power_usage:
-                add_status.config(text="Please enter a stock item power usage.", foreground= "red")
+                add_status.config(text="Please enter a stock item power usage.", fg= "red")
                 stock_power.focus_set()
                 return
+            
+            try: #try/except loop to ensure warranty entered cannot be negative, and must be an integer that is divisible by 3 - HTL
+                item_warranty = int(item_warranty)
+                if item_warranty >= 0:
+                    assert item_warranty % 3 == 0
+                else:
+                    add_status.config(text="Please enter a warranty length of 0 or more months.", fg="red")
+                    stock_warranty.focus_set()
+                    return
+            except AssertionError:
+                add_status.config(text="Please enter a warranty that is a multiple of 3 (3, 6, 9, etc.).", fg="red")
+                stock_warranty.focus_set()
+                return
+            except ValueError:
+                add_status.config(text="Please enter a whole number for warranty length.", fg="red")
+                stock_warranty.focus_set()
+                return
+            
+            try: #try/except loop to ensure power usage entered cannot be negative or anything other than an integer - HTL
+                power_usage = int(power_usage)
+                if power_usage < 0:
+                    add_status.config(text="Please enter a power usage of 0 or more in Watts.", fg="red")
+                    stock_power.focus_set()
+                    return
+            except ValueError:
+                add_status.config(text="Please enter a whole number for power usage.", fg="red")
+                stock_power.focus_set()
+                return
+
             stock = Electronic(item_id,item_name,item_price,item_quantity,item_warranty,power_usage)
-            stock_list.insert(tk.END, (f"Electronic: {stock.id}, {stock.name}, £{stock.price:.2f}, {stock.quantity}, {stock.warrantyPeriod}, {stock.powerUsage}"))
+            stock_list.insert(tk.END, (f"Electronic: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}, {stock.warrantyPeriod}mo, {stock.powerUsage}W"))
         
         counter.increment()
 
@@ -306,7 +346,7 @@ def add_stock():
 
 #Button for adding stock to the list.
     
-add_window_button = ttk.Button(btn_frame, text="Add Stock", command=add_stock_window, width=20).grid(row=0, column=0, padx=3)
+add_window_button = tk.Button(btn_frame, text="Add stock", command=add_stock_window).grid(row=0, column=0, padx=3)
 
 frame = ttk.Frame(root, width=40, height=15)
 frame.pack(pady=10)
