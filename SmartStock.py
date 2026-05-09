@@ -68,6 +68,12 @@ def add_stock_window():
     add_window = tk.Toplevel(root)
     add_window.title("Add Stock")
     add_window.geometry("420x480")
+
+    add_window.columnconfigure(0, weight=1)
+    add_window.columnconfigure(1, weight=1)
+    add_window.columnconfigure(2, weight=1)
+    add_window.columnconfigure(3, weight=1)
+
     global opt
     opt = tk.StringVar(add_window)
     opt.set("Default Product")
@@ -139,18 +145,14 @@ def add_stock_window():
 
     def update_options(selected):
         if selected == "Perishable Product":
-            perishable_opts.pack()
-            electronic_opts.pack_forget()
+            perishable_opts.grid(row=4,column=1,columnspan=2)
+            electronic_opts.grid_forget()
         elif selected == "Electronic Product":
-            electronic_opts.pack()
-            perishable_opts.pack_forget()
+            electronic_opts.grid(row=4,column=1,columnspan=2)
+            perishable_opts.grid_forget()
         else:
-            electronic_opts.pack_forget()
-            perishable_opts.pack_forget()
-        
-
-    def close_add_stock_window():
-        add_window.destroy()
+            electronic_opts.grid_forget()
+            perishable_opts.grid_forget()
 
     perishable_opts = PerishableOptions(add_window)
     electronic_opts = ElectronicOptions(add_window)
@@ -158,26 +160,26 @@ def add_stock_window():
     tk.Label(
         add_window, 
         text="Add a new item",
-        font=label_font).pack(pady=(15,5))
+        font=label_font).grid(row=0,column=1,columnspan=2)
     
     tk.Label(
         add_window,
         text="Select a Product Type",
         font=label_font
-    ).pack(pady=3)
+    ).grid(row=1,column=1,columnspan=2)
 
     #Allows user to choose which type of product they want to add
     options = ["Default Product", "Perishable Product", "Electronic Product"]
     stock_type = tk.OptionMenu(add_window, opt, *options, command=update_options)
-    stock_type.pack()
+    stock_type.grid(row=2,column=1,columnspan=2)
 
-    DefaultOptions(add_window).pack()
+    DefaultOptions(add_window).grid(row=3,column=1,columnspan=2)
 
     global add_status
     add_status = tk.Label(add_window, text="", font=("Arial",10))
-    add_status.pack()
+    add_status.grid(row=5,column=1,columnspan=2)
 
-    add_button = tk.Button(add_window, text="Add Stock", command=add_stock).pack(side="bottom",pady=3)
+    add_button = tk.Button(add_window, text="Add Stock", command=add_stock).grid(row=6,column=1,columnspan=2)
     
     #Runs the rest of the add_stock function on button click, then closes the window
 
