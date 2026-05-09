@@ -108,7 +108,7 @@ def add_stock_window():
             super().__init__(parent)
             ttk.Label(
                 self,
-                text="Expiry Date",
+                text="Expiry Date (DD/MM/YY)",
                 font=label_font
             ).pack(pady=3)
             global stock_expiry
@@ -261,11 +261,11 @@ def add_stock():
         try: #try/except loop to ensure item quantity entered cannot be negative or anything other than an integer - HTL
             item_quantity = int(item_quantity)
             if item_quantity < 0:
-                add_status.config(text="Please enter a quantity of 0 or larger.", fg="red")
+                add_status.config(text="Please enter a quantity of 0 or larger.", foreground="red")
                 stock_price.focus_set()
                 return
         except ValueError:
-            add_status.config(text="Please enter a whole number for stock quantity.", fg="red")
+            add_status.config(text="Please enter a whole number for stock quantity.", foreground="red")
             stock_quantity.focus_set()
             return
 
@@ -290,11 +290,17 @@ def add_stock():
                 
             #Expiry date validation
             try:
-                item_expiry = item expiry.split("/")
-                item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
+                format = "%d/%m/%y"
+                exp_date = datetime.strptime(item_expiry, format)
+                #exp_date_only = str(exp_date[9:])
+                #print(exp_date_only)
+                
+                #non-functional:
+                #item_expiry = item expiry.split("/")
+                #item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
                 #^^^
             except:
-                status.config(text="Please enter a valid date.", fg="red")
+                status.config(text="Please enter a valid date (DD/MM/YY).", foreground="red")
                 stock_expiry.focus_set()
                 return
                 
@@ -306,11 +312,11 @@ def add_stock():
             item_warranty = stock_warranty.get().strip()
             power_usage = stock_power.get().strip()
             if not item_warranty:
-                add_status.config(text="Please enter a stock item warranty period in months.", fg= "red")
+                add_status.config(text="Please enter a stock item warranty period in months.", foreground= "red")
                 stock_warranty.focus_set()
                 return
             if not power_usage:
-                add_status.config(text="Please enter a stock item power usage.", fg= "red")
+                add_status.config(text="Please enter a stock item power usage.", foreground= "red")
                 stock_power.focus_set()
                 return
             
@@ -319,26 +325,26 @@ def add_stock():
                 if item_warranty >= 0:
                     assert item_warranty % 3 == 0
                 else:
-                    add_status.config(text="Please enter a warranty length of 0 or more months.", fg="red")
+                    add_status.config(text="Please enter a warranty length of 0 or more months.", foreground="red")
                     stock_warranty.focus_set()
                     return
             except AssertionError:
-                add_status.config(text="Please enter a warranty that is a multiple of 3 (3, 6, 9, etc.).", fg="red")
+                add_status.config(text="Please enter a warranty that is a multiple of 3 (3, 6, 9, etc.).", foreground="red")
                 stock_warranty.focus_set()
                 return
             except ValueError:
-                add_status.config(text="Please enter a whole number for warranty length.", fg="red")
+                add_status.config(text="Please enter a whole number for warranty length.", foreground="red")
                 stock_warranty.focus_set()
                 return
             
             try: #try/except loop to ensure power usage entered cannot be negative or anything other than an integer - HTL
                 power_usage = int(power_usage)
                 if power_usage < 0:
-                    add_status.config(text="Please enter a power usage of 0 or more in Watts.", fg="red")
+                    add_status.config(text="Please enter a power usage of 0 or more in Watts.", foreground="red")
                     stock_power.focus_set()
                     return
             except ValueError:
-                add_status.config(text="Please enter a whole number for power usage.", fg="red")
+                add_status.config(text="Please enter a whole number for power usage.", foreground="red")
                 stock_power.focus_set()
                 return
 
@@ -717,17 +723,17 @@ def summonHealthReport():
         percentageDefaults = (defaultsCount / itemsListCount) * 100
         tk.Label(healthReportWindow,
                  text=f"{percentageDefaults:.1f}% Regular  |  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic",
-                 font=("Arial", 10), fg="gray").pack(pady=(0, 5))
+                 font=("Arial", 10), foreground="gray").pack(pady=(0, 5))
 
     # Show low stock count in red if any items are low, black otherwise
     lowStockLabelColor = "red" if lowStockCount > 0 else "black"
-    tk.Label(healthReportWindow, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), fg=lowStockLabelColor).pack(pady=(5, 0))
+    tk.Label(healthReportWindow, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), foreground=lowStockLabelColor).pack(pady=(5, 0))
 
     # If there are low stock items, list each one by name
     if lowStockCountList:
         tk.Label(healthReportWindow, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
         for name in lowStockCountList:
-            tk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), fg="red").pack()
+            tk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), foreground="red").pack()
 
     # Show the total combined stock value
     tk.Label(healthReportWindow, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
