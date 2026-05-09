@@ -125,7 +125,7 @@ def add_stock_window():
             global temp_value
             temp_value = tk.StringVar(value="Celsius (°C)")
             temp_options = ("Celsius (°C)","Fahrenheit (°F)")
-            temp_unit = ttk.OptionMenu(self, temp_value, *temp_options)
+            temp_unit = ttk.OptionMenu(self, temp_value, "Celsius (°C)", *temp_options)
             temp_unit.config(width=16)
             temp_unit.pack(pady=3,side=tk.RIGHT)
 
@@ -179,7 +179,7 @@ def add_stock_window():
 
     #Allows user to choose which type of product they want to add
     options = ["Default Product", "Perishable Product", "Electronic Product"]
-    stock_type = ttk.OptionMenu(add_window, opt, *options, command=update_options)
+    stock_type = ttk.OptionMenu(add_window, opt, "Default Product", *options, command=update_options)
     stock_type.grid(row=2,column=1,columnspan=2)
 
     DefaultOptions(add_window).grid(row=3,column=1,columnspan=2)
