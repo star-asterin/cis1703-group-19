@@ -705,7 +705,7 @@ def summonHealthReport():
         percentageElectronics = (electronicsCount / itemsListCount) * 100
         percentageDefaults = (defaultsCount / itemsListCount) * 100
         tk.Label(healthReportWindow,
-                 text=f"  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic  |  {percentageDefaults:.1f}% Regular",
+                 text=f"{percentageDefaults:.1f}% Regular  |  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic",
                  font=("Arial", 10), fg="gray").pack(pady=(0, 5))
 
     # Show low stock count in red if any items are low, black otherwise
@@ -730,7 +730,7 @@ def summonHealthReport():
             tk.Label(healthReportWindow, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
                      font=("Arial", 10)).pack()
                      
-    ttk.Button(healthReportWindow, text="DESTROY REPORT", command=healthReportWindow.destroy).pack(pady=3)
+    ttk.Button(healthReportWindow, text="Close Report Window", command=healthReportWindow.destroy).pack(pady=3)
 
 
 # Button that opens the health report window
