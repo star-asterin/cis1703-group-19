@@ -346,7 +346,7 @@ def add_stock():
 
 #Button for adding stock to the list.
     
-add_window_button = tk.Button(btn_frame, text="Add stock", command=add_stock_window).grid(row=0, column=0, padx=3)
+add_window_button = ttk.Button(btn_frame, text="Add stock", command=add_stock_window, width=20).grid(row=0, column=0, padx=3)
 
 frame = ttk.Frame(root, width=40, height=15)
 frame.pack(pady=10)
