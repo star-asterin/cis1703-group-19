@@ -204,47 +204,58 @@ def add_stock():
     
     #Now the only purpose of add_stock is to create a new object, using data from the "add_stock_window" function
     #Core attributes
-    item_type = opt.get().strip()
-    item_id = f"{counter.value:03}"
-    global item_name
-    item_name = stock_name.get().strip()
-    item_price = stock_price.get().strip()
-    item_quantity = stock_quantity.get().strip()
-    
-    if not item_name:
-        add_status.config(text="Please enter a stock item name", fg= "red")
-        stock_name.focus_set()
-        return
-    if not item_price:
-        add_status.config(text="Please enter a stock item price.", fg= "red")
-        stock_price.focus_set()
-        return
-    if not item_quantity:
-        add_status.config(text="Please enter a stock item quantity.", fg= "red")
-        stock_quantity.focus_set()
-        return
-
-    #Only allows item_price to be up to 2DP, raises an error if not input correctly - Bruno
     try:
-        item_price = float(item_price) 
-        if item_price >= 0:             #Checks if price is 0 or larger, then converts to 2d.p. - HTL
-            assert item_price == (round(item_price, 2))
-        else:                           #for negative numbers that do not pass the above check, raises error message and returns - HTL
-            add_status.config(text="Please enter a price value of 0 or larger.", fg="red")
+        item_type = opt.get().strip()
+        item_id = f"{counter.value:03}"
+        global item_name
+        item_name = stock_name.get().strip()
+        item_price = stock_price.get().strip()
+        item_quantity = stock_quantity.get().strip()
+        
+        if not item_name:
+            add_status.config(text="Please enter a stock item name", fg= "red")
+            stock_name.focus_set()
+            return
+        if not item_price:
+            add_status.config(text="Please enter a stock item price.", fg= "red")
             stock_price.focus_set()
             return
-    except AssertionError:
-        add_status.config(text="Please only enter a price with up to 2 decimal points.", fg="red")
-        stock_price.focus_set()
-        return
-    except ValueError:
-        add_status.config(text="Please only enter an integer/decimal number for the price.", fg="red")
-        stock_price.focus_set()
-        return
-    except:
-        add_status.config(text="The price entered is not possible.", fg="red")
-        stock_price.focus_set()
-        return
+        if not item_quantity:
+            add_status.config(text="Please enter a stock item quantity.", fg= "red")
+            stock_quantity.focus_set()
+            return
+        try:
+            item_quantity = int(item_quantity)
+            if item_quantity < 0:
+                add_status.config(text="Please enter a quantity of 0 or larger.", fg="red")
+                stock_price.focus_set()
+                return
+        except ValueError:
+            add_status.config(text="Please enter a whole number for stock quantity.", fg="red")
+            stock_quantity.focus_set()
+            return
+
+        #Only allows item_price to be up to 2DP, raises an error if not input correctly
+        try:
+            item_price = float(item_price)
+            if item_price >= 0:
+                assert item_price == (round(item_price, 2))
+            else: 
+                add_status.config(text="Please enter a price value of 0 or larger.", fg="red")
+                stock_price.focus_set()
+                return
+        except AssertionError:
+            add_status.config(text="Please only enter a price with up to 2 decimal points.", fg="red")
+            stock_price.focus_set()
+            return
+        except ValueError:
+            add_status.config(text="Please only enter an integer/decimal number for the price.", fg="red")
+            stock_price.focus_set()
+            return
+        except:
+            add_status.config(text="The price entered is not possible.", fg="red")
+            stock_price.focus_set()
+            return
 
     try: #try/except loop to ensure item quantity entered cannot be negative or anything other than an integer - HTL
         item_quantity = int(item_quantity)
@@ -324,8 +335,10 @@ def add_stock():
     
     counter.increment()
 
-    stock.low_stock_warning()
-    add_status.config(text="Stock Added!", fg="green")
+        stock.low_stock_warning()
+        add_status.config(text="Stock Added!", fg="green")
+    except tk.TclError:
+        status.config(text="An error occurred. Please close all 'Add Stock' windows and try again.",fg="red")
 
 # Add event to logs
     writeLog(f"Added item: {item_name}")
