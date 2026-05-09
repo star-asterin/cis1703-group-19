@@ -76,7 +76,7 @@ def add_stock_window():
 
     global opt
     opt = tk.StringVar(add_window)
-    opt.set("Default Product")
+    opt.set("Regular Product")
 
     class DefaultOptions(ttk.Frame):
         def __init__(self, parent):
@@ -178,8 +178,8 @@ def add_stock_window():
     ).grid(row=1,column=1,columnspan=2)
 
     #Allows user to choose which type of product they want to add
-    options = ["Default Product", "Perishable Product", "Electronic Product"]
-    stock_type = ttk.OptionMenu(add_window, opt, "Default Product", *options, command=update_options)
+    options = ["Regular Product", "Perishable Product", "Electronic Product"]
+    stock_type = ttk.OptionMenu(add_window, opt, "Regular Product", *options, command=update_options)
     stock_type.grid(row=2,column=1,columnspan=2)
 
     DefaultOptions(add_window).grid(row=3,column=1,columnspan=2)
@@ -270,7 +270,7 @@ def add_stock():
             return
 
         #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
-        if item_type == "Default Product":
+        if item_type == "Regular Product":
             stock = Product(item_id,item_name,item_price,item_quantity)
             stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}"))
 
@@ -705,7 +705,7 @@ def summonHealthReport():
         percentageElectronics = (electronicsCount / itemsListCount) * 100
         percentageDefaults = (defaultsCount / itemsListCount) * 100
         tk.Label(healthReportWindow,
-                 text=f"  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic  |  {percentageDefaults:.1f}% Regular",
+                 text=f"{percentageDefaults:.1f}% Regular  |  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic",
                  font=("Arial", 10), fg="gray").pack(pady=(0, 5))
 
     # Show low stock count in red if any items are low, black otherwise
