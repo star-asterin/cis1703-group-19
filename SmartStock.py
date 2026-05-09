@@ -287,6 +287,17 @@ def add_stock():
                 add_status.config(text="Please enter a storage temperature.", foreground= "red")
                 stock_temp.focus_set()
                 return
+                
+            #Expiry date validation
+            try:
+                item_expiry = item expiry.split("/")
+                item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
+                #^^^
+            except:
+                status.config(text="Please enter a valid date.", fg="red")
+                stock_expiry.focus_set()
+                return
+                
             stock = Perishable(item_id,item_name,item_price,item_quantity,item_expiry,item_temp)
             stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}, {stock.expiryDate}, {stock.storageTemp}{temp_unit}"))
 
