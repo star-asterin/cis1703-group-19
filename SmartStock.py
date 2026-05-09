@@ -38,7 +38,6 @@ class Perishable(Product):
         self.expiryDate = expiryDate
         self.storageTemp = storageTemp
         
-
 #subclass
 class Electronic(Product):
     def __init__(self, id, name, price, quantity, warrantyPeriod, powerUsage):
@@ -157,8 +156,11 @@ def add_stock_window():
             electronic_opts.grid(row=4,column=1,columnspan=2)
             perishable_opts.grid_forget()
         else:
-            electronic_opts.grid_forget()
-            perishable_opts.grid_forget()
+            electronic_opts.pack_forget()
+            perishable_opts.pack_forget()
+        
+    def close_add_stock_window():
+        add_window.destroy()
 
     perishable_opts = PerishableOptions(add_window)
     electronic_opts = ElectronicOptions(add_window)
@@ -557,6 +559,9 @@ load_button.bind("<Button-1>", loadDefaultInventory)
 # Creates "Check Logs" button, separately assigns to grid
 check_logs = tk.Button(btn_frame, text= "Transaction history", command=checkLogs)
 check_logs.grid(row=3, column=0, padx=3)
+
+tipLabel=tk.Label(root, text="Hold 'Shift' key to show alternative save and load options", font=("Arial",10))
+tipLabel.pack()
 
 # This binds the Shift key press event to the whole window with a lambda function, swaps Save and Load
 # with their respective "as..." versions
