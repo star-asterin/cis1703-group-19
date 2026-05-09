@@ -76,7 +76,7 @@ def add_stock_window():
 
     global opt
     opt = tk.StringVar(add_window)
-    opt.set("Default Product")
+    opt.set("Regular Product")
 
     class DefaultOptions(ttk.Frame):
         def __init__(self, parent):
@@ -178,8 +178,8 @@ def add_stock_window():
     ).grid(row=1,column=1,columnspan=2)
 
     #Allows user to choose which type of product they want to add
-    options = ["Default Product", "Perishable Product", "Electronic Product"]
-    stock_type = ttk.OptionMenu(add_window, opt, "Default Product", *options, command=update_options)
+    options = ["Regular Product", "Perishable Product", "Electronic Product"]
+    stock_type = ttk.OptionMenu(add_window, opt, "Regular Product", *options, command=update_options)
     stock_type.grid(row=2,column=1,columnspan=2)
 
     DefaultOptions(add_window).grid(row=3,column=1,columnspan=2)
@@ -270,7 +270,7 @@ def add_stock():
             return
 
         #Creates a new instance, depending on which (sub)class the user chose in the "add_stock_window" function
-        if item_type == "Default Product":
+        if item_type == "Regular Product":
             stock = Product(item_id,item_name,item_price,item_quantity)
             stock_list.insert(tk.END, (f"Product: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}"))
 
@@ -287,6 +287,17 @@ def add_stock():
                 add_status.config(text="Please enter a storage temperature.", foreground= "red")
                 stock_temp.focus_set()
                 return
+                
+            #Expiry date validation
+            try:
+                item_expiry = item expiry.split("/")
+                item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
+                #^^^
+            except:
+                status.config(text="Please enter a valid date.", fg="red")
+                stock_expiry.focus_set()
+                return
+                
             stock = Perishable(item_id,item_name,item_price,item_quantity,item_expiry,item_temp)
             stock_list.insert(tk.END, (f"Perishable: {stock.id}, {stock.name}, £{stock.price:.2f}, x{stock.quantity}, {stock.expiryDate}, {stock.storageTemp}{temp_unit}"))
 
@@ -734,7 +745,7 @@ def summonHealthReport():
 
 
 # Button that opens the health report window
-health_button = tk.Button(btn_frame, text="Health Report", command=summonHealthReport)
+health_button = ttk.Button(btn_frame, text="Health Report", command=summonHealthReport, width=20)
 health_button.grid(row=3, column=1, padx=3)
 
 # main loop to run the SmartStock application to view stock.
