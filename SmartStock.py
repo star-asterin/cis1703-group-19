@@ -615,12 +615,12 @@ tipLabel.pack()
 # This binds the Shift key press event to the whole window with a lambda function, swaps Save and Load
 # with their respective "as..." versions
 root.bind("<KeyPress-Shift_L>",   lambda e: (save_button.config(text="Save inventory as. . ."),
-                                             load_button.config(text="Load inventory from. . .")))
+                                             load_button.config(text="Load inventory from. . .",width=22)))
 root.bind("<KeyPress-Shift_R>",   lambda e: (save_button.config(text="Save inventory as. . ."),
-                                             load_button.config(text="Load inventory from. . .")))
+                                             load_button.config(text="Load inventory from. . .",width=22)))
 root.bind("<KeyRelease-Shift_L>", lambda e: (save_button.config(text="Save inventory"),
-                                             load_button.config(text="Load inventory")))
+                                             load_button.config(text="Load inventory",width=20)))
 root.bind("<KeyRelease-Shift_R>", lambda e: (save_button.config(text="Save inventory"),
-                                             load_button.config(text="Load inventory")))
+                                             load_button.config(text="Load inventory",width=20)))
 # main loop to run the SmartStock application to view stock.
 root.mainloop()
