@@ -108,7 +108,7 @@ def add_stock_window():
             super().__init__(parent)
             ttk.Label(
                 self,
-                text="Expiry Date (DD/MM/YY)",
+                text="Expiry Date (DD/MM/YYYY)",
                 font=label_font
             ).pack(pady=3)
             global stock_expiry
@@ -289,9 +289,9 @@ def add_stock():
                 return
                 
             #Expiry date validation
-            try:
-                format = "%d/%m/%y"
-                exp_date = datetime.strptime(item_expiry, format)
+            #try:
+                #format = "%d/%m/%y"
+                #exp_date = datetime.strptime(item_expiry, format)
                 #exp_date_only = str(exp_date[9:])
                 #print(exp_date_only)
                 
@@ -299,8 +299,19 @@ def add_stock():
                 #item_expiry = item expiry.split("/")
                 #item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
                 #^^^
-            except:
-                status.config(text="Please enter a valid date (DD/MM/YY).", foreground="red")
+            exp_date = ""
+            date_formats = ["%d/%m/%y","%d/%m/%Y","%d-%m-%y","%d-%m-%Y","%d.%m.%y","%d.%m.%Y"]
+            for date_format in date_formats:
+                try:
+                    exp_date = datetime.strptime(item_expiry, date_format)
+                    exp_date_only = str(exp_date)[:10].split("-")
+                    exp_date_format = f"{exp_date_only[2]}-{exp_date_only[1]}-{exp_date_only[0]}"
+                    break
+                except ValueError:
+                    pass
+
+            if exp_date == "":
+                add_status.config(text="Please enter a valid date (DD/MM/YYYY).", foreground="red")
                 stock_expiry.focus_set()
                 return
                 
@@ -428,10 +439,10 @@ def calculate_total_cost():
     total_cost_label.config(text=f"Total Cost: £{total_price:.2f}")
 
 
-total_cost_label = tk.Label(root, text=f"")
+total_cost_label = ttk.Label(root, text=f"")
 total_cost_label.pack()
 
-total_cost_button = tk.Button(root, text="Calculate Total Cost", command=calculate_total_cost)
+total_cost_button = ttk.Button(root, text="Calculate Total Cost", command=calculate_total_cost)
 total_cost_button.pack()
 #function for transaction history logs here
 
@@ -711,40 +722,40 @@ def summonHealthReport():
     healthReportWindow.geometry("350x550")
 
     # Report title 4 window
-    tk.Label(healthReportWindow, text="Inventory Summary", font=("Arial", 12, "bold")).pack(pady=10)
+    ttk.Label(healthReportWindow, text="Inventory Summary", font=("Arial", 12, "bold")).pack(pady=10)
 
     # DISPLAY total item count
-    tk.Label(healthReportWindow, text=f"Total Items: {itemsListCount}", font=("Arial", 11)).pack(pady=(5, 0))
+    ttk.Label(healthReportWindow, text=f"Total Items: {itemsListCount}", font=("Arial", 11)).pack(pady=(5, 0))
 
     # Show percentage breakdown by product type if there are anyit
     if itemsListCount > 0:
         percentagePerishables = (perishablesCount / itemsListCount) * 100
         percentageElectronics = (electronicsCount / itemsListCount) * 100
         percentageDefaults = (defaultsCount / itemsListCount) * 100
-        tk.Label(healthReportWindow,
+        ttk.Label(healthReportWindow,
                  text=f"{percentageDefaults:.1f}% Regular  |  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic",
                  font=("Arial", 10), foreground="gray").pack(pady=(0, 5))
 
     # Show low stock count in red if any items are low, black otherwise
     lowStockLabelColor = "red" if lowStockCount > 0 else "black"
-    tk.Label(healthReportWindow, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), foreground=lowStockLabelColor).pack(pady=(5, 0))
+    ttk.Label(healthReportWindow, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), foreground=lowStockLabelColor).pack(pady=(5, 0))
 
     # If there are low stock items, list each one by name
     if lowStockCountList:
-        tk.Label(healthReportWindow, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
+        ttk.Label(healthReportWindow, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
         for name in lowStockCountList:
-            tk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), foreground="red").pack()
+            ttk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), foreground="red").pack()
 
     # Show the total combined stock value
-    tk.Label(healthReportWindow, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
+    ttk.Label(healthReportWindow, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
 
     # Show a per-item value breakdown sorted from highest to lowest value
     if totalValue > 0 and category2valueMap:
-        tk.Label(healthReportWindow, text="Value breakdown:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
+        ttk.Label(healthReportWindow, text="Value breakdown:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
         for name, val in sorted(category2valueMap.items(), key=lambda x: x[1], reverse=True):
             # Calculate what percentage of total value this item represents
             percentage = (val / totalValue) * 100
-            tk.Label(healthReportWindow, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
+            ttk.Label(healthReportWindow, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
                      font=("Arial", 10)).pack()
                      
     ttk.Button(healthReportWindow, text="Close Report Window", command=healthReportWindow.destroy).pack(pady=3)
