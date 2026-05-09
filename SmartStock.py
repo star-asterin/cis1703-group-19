@@ -397,9 +397,24 @@ def edit_stock():
 
 
 #function for total cost of stock here
+def calculate_total_cost():
+    total_price = 0
+    item_list = list(stock_list.get(0, tk.END))
+    for item in item_list:
+        if "Product: " in item:
+            newstring = item[8:]
+            newlist = str(newstring).split(", ")
+            item_price = newlist[2]
+            item_price1 = item_price[1:]
+            total_price += float(item_price1)
+    total_cost_label.config(text=f"Total Cost: £{total_price:.2f}")
 
 
+total_cost_label = tk.Label(root, text=f"")
+total_cost_label.pack()
 
+total_cost_button = tk.Button(root, text="Calculate Total Cost", command=calculate_total_cost)
+total_cost_button.pack()
 #function for transaction history logs here
 
 
