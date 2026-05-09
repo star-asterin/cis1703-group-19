@@ -734,7 +734,7 @@ def summonHealthReport():
 
 
 # Button that opens the health report window
-health_button = tk.Button(btn_frame, text="Health Report", command=summonHealthReport)
+health_button = ttk.Button(btn_frame, text="Health Report", command=summonHealthReport, width=20)
 health_button.grid(row=3, column=1, padx=3)
 
 # main loop to run the SmartStock application to view stock.
