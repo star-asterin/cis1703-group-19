@@ -34,5 +34,45 @@
     {
         "timestamp": "2026-05-07 15:53:30",
         "action": "Saved inventory as [/Users/kostyamac/Documents/1738 1 1 wow crazy.json]"
+    },
+    {
+        "timestamp": "2026-05-09 18:22:46",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-09 18:23:16",
+        "action": "Added item: kostya"
+    },
+    {
+        "timestamp": "2026-05-09 18:23:45",
+        "action": "Added item: kostya_eggs"
+    },
+    {
+        "timestamp": "2026-05-09 18:25:33",
+        "action": "Added item: kostya_toaster"
+    },
+    {
+        "timestamp": "2026-05-09 18:25:40",
+        "action": "Added item: kostya_tv"
+    },
+    {
+        "timestamp": "2026-05-09 18:25:47",
+        "action": "Saved inventory to [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-09 18:26:01",
+        "action": "Saved inventory to [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-09 18:27:58",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-09 18:29:45",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-09 18:31:03",
+        "action": "Loaded default inventory [inventorySave.json]"
     }
 ]
