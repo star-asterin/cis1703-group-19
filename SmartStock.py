@@ -434,8 +434,9 @@ def calculate_total_cost():
             newstring = item[1:]
             newlist = str(newstring).split(", ")
             item_price = newlist[2]
+            item_quantity = newlist[3][1:]
             item_price1 = item_price[1:]
-            total_price += float(item_price1)
+            total_price += float(item_price1) * int(item_quantity)
     total_cost_label.config(text=f"Total Cost: £{total_price:.2f}")
 
 
