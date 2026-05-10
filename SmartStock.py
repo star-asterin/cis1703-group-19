@@ -409,11 +409,103 @@ def remove_stock():
 
 # Function for editing stock here
 def edit_stock():
-    pass
+    selected_index = stock_list.curselection()
+    if not selected_index:
+        status.config(text="Please select a stock item to edit from the list.", foreground="red")
+        return
+    item_str= stock_list.get(selected_index)
+    
+    try:
+        parts= item_str.split(", ")
+        header = parts [0].split(": ")
+        item_type = header[0]
+        item_id = header[1]
+        item_name= parts[1]
+        item_price = parts[2].replace("£", "")
+        item_quantity = parts[3].replace("x", "")
+    except Exception:
+        status.config(text=" Error parsing the item for editing.", foreground="red")
+        return
+    
+    edit_window = tk.Toplevel(root)
+    edit_window.title(f"Edit Stock Item {item_id}")
+    edit_window.geometry("300x400")
 
-#Button to remove selected stock from list
+    ttk.Label(edit_window, text=f"Editing {item_type} (ID: {item_id})", font=("arial", 10, "bold")).pack(pady=10)
+    ttk.Label(edit_window, text="Name: ").pack()
+    name_entry = ttk.Entry(edit_window)
+    name_entry.insert(0, item_name)
+    name_entry.pack(pady=2)
+    
+    ttk.Label(edit_window, text="Price (): ").pack()
+    price_entry = ttk.Entry(edit_window)
+    price_entry.insert(0, item_price)
+    price_entry.pack(pady=2)
+    
+    ttk.Label(edit_window, text="Quantity: ").pack()
+    quantity_entry = ttk.Entry(edit_window)
+    quantity_entry.insert(0, item_quantity)
+    quantity_entry.pack(pady=2)
+    
+    extra_entries = {}
+    if item_type == "Perishable":
+        ttk.Label(edit_window, text="Expiry Date: ").pack()
+        expiry_entry = ttk.Entry(edit_window)
+        expiry_entry.insert(0, parts[4])
+        expiry_entry.pack(pady=2)
+        extra_entries['expiry'] = expiry_entry
+        
+        ttk.Label(edit_window, text="Temperature: ").pack()
+        temp_entry = ttk.Entry(edit_window)
+        temp_entry.insert(0, parts [5])
+        temp_entry.pack(pady=2)
+        extra_entries['temperature'] = temp_entry
+    
+    elif item_type == "Electronic":
+        ttk.Label(edit_window, text="Warranty (mo) : ").pack()
+        warranty_entry = ttk.Entry(edit_window)
+        warranty_entry.insert(0, parts[4].replace("mo", ""))
+        warranty_entry.pack(pady=2)
+        extra_entries['warranty'] = warranty_entry
+        
+        ttk.Label(edit_window, text= "Power (W): ").pack()
+        power_entry = ttk.Entry(edit_window)
+        power_entry.insert(0, parts[5].replace("W", ""))
+        power_entry.pack(pady=2)
+        extra_entries['power'] = power_entry
+        
+        def save_edits():
+            try:
+                new_name = name_entry.get().strip()
+                new_price = float(price_entry.get().strip())
+                new_quantity = int(quantity_entry.get().strip())
+                
+                #reconstruct string
+                if item_type == "Regular Product" or item_type == "product":
+                    new_str = f"Product: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}"
+                elif item_type == "Perishable":
+                    new_str = f"Perishable: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['expiry'].get()}, {extra_entries['temperature'].get()}"
+                elif item_type == "Electronic":
+                    new_str = f"Electronic: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['warranty'].get()}mo, {extra_entries['power'].get()}W"
+                    
+                stock_list.delete(selected_index)
+                stock_list.insert(selected_index, new_str)
+                
+            #update background if low stock
+                if new_quantity <= 5:
+                    stock_list.itemconfig(selected_index, bg="red")
+                else:
+                    stock_list.itemconfig(selected_index, bg="white")
+                    
+                status.config(text="Stock item updated successfully.", foreground="green")
+                writeLog(f"Edited item: {item_name} to {new_name}")
+                edit_window.destroy()
+            except ValueError:
+                status.config(text="Please ensure price is a number and quantity is a whole number.", foreground="red")
+        ttk.Button(edit_window, text="Save Changes", command=save_edits).pack(pady=10)
 
-#function for editing stock here
+
+
 
 
 

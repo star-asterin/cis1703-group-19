@@ -74,5 +74,25 @@
     {
         "timestamp": "2026-05-09 18:31:03",
         "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-10 18:12:15",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-10 18:15:22",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-10 18:37:24",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-10 18:47:22",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-10 18:47:34",
+        "action": "Edited item: kostya_tv to kostya_tv"
     }
 ]
