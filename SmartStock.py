@@ -7,7 +7,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import json
-from datetime import datetime
+from datetime import datetime, date
 
 root=tk.Tk()
 root.title("SmartStock")
@@ -775,39 +775,55 @@ def summonHealthReport():
     defaultsCount = 0
     electronicsCount = 0
     category2valueMap = {} # Maps each item name to the total stock value for that item
+    expiringStockList = []
+    expiredStockList = []
 
     for item in itemsList:
-        try:
-            parts = item.split(", ")
-            itemType = parts[0].split(":")[0]
-            itemName = parts[1].strip()
-            price = float(parts[2].replace("£", ""))
-            quantity = int(parts[3].replace("x", ""))
+        #try:
+        parts = item.split(", ")
+        itemType = parts[0].split(":")[0]
+        itemName = parts[1].strip()
+        price = float(parts[2].replace("£", ""))
+        quantity = int(parts[3].replace("x", ""))
 
-            # Calculate total value for this item (price * quantity)
-            itemValue = price * quantity
-            totalValue += itemValue
+        # Calculate total value for this item (price * quantity)
+        itemValue = price * quantity
+        totalValue += itemValue
 
 
-            # Add to the appropriate type counter
-            if itemType == "Perishable":
-                perishablesCount += 1
-            elif itemType == "Electronic":
-                electronicsCount += 1
-            else:
-                defaultsCount += 1
+        # Add to the appropriate type counter
+        if itemType == "Perishable":
+            parts = parts[4].split("/")
+            year = parts[2]; month = parts[1]; day = parts[0]
+            day = int(day); month = int(month); year = int(year)
+            expiry_date = date(day=day,month=month,year=year)
+            current_date = date.today()
+            days_until_expiry = (expiry_date - current_date).days
 
-            # Accumulate value per item name for the breakdown section
-            category2valueMap[itemName] = category2valueMap.get(itemName, 0) + itemValue
+            if days_until_expiry < 0:
+                days_until_expiry = str(days_until_expiry)
+                expiredStockList.append(f"{itemName}, {days_until_expiry[1:]}")
+            elif days_until_expiry <= 7:
+                expiringStockList.append(f"{itemName}, {days_until_expiry}")
+            
 
-            # If quantity is 5 or below, flag as low stock
-            if quantity <= 5:
-                lowStockCount += 1
-                lowStockCountList.append(itemName)
+            perishablesCount += 1
+        elif itemType == "Electronic":
+            electronicsCount += 1
+        else:
+            defaultsCount += 1
 
-        except (IndexError, ValueError):
-            # Skip any entries that can't be parsed cleanly
-            pass
+        # Accumulate value per item name for the breakdown section
+        category2valueMap[itemName] = category2valueMap.get(itemName, 0) + itemValue
+
+        # If quantity is 5 or below, flag as low stock
+        if quantity <= 5:
+            lowStockCount += 1
+            lowStockCountList.append(itemName)
+
+        # except (IndexError, ValueError):
+        #     # Skip any entries that can't be parsed cleanly
+        #     pass
 
     # Sjummon the report popup window
     healthReportWindow = tk.Toplevel(root)
@@ -838,6 +854,15 @@ def summonHealthReport():
         ttk.Label(healthReportWindow, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
         for name in lowStockCountList:
             ttk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), foreground="red").pack()
+
+    if expiringStockList:
+        ttk.Label(healthReportWindow,text="Expiring Stock:",font=label_font).pack(pady=(2,0))
+        for name in expiringStockList:
+            ttk.Label(healthReportWindow, text=f"Item: {name} days until expiry date").pack()
+    if expiredStockList:
+        ttk.Label(healthReportWindow,text="Expired Stock:",font=label_font).pack(pady=(2,0))
+        for name in expiredStockList:
+            ttk.Label(healthReportWindow, text=f"Item: {name} days past expiry date").pack()
 
     # Show the total combined stock value
     ttk.Label(healthReportWindow, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
