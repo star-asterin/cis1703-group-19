@@ -288,17 +288,6 @@ def add_stock():
                 stock_temp.focus_set()
                 return
                 
-            #Expiry date validation
-            #try:
-                #format = "%d/%m/%y"
-                #exp_date = datetime.strptime(item_expiry, format)
-                #exp_date_only = str(exp_date[9:])
-                #print(exp_date_only)
-                
-                #non-functional:
-                #item_expiry = item expiry.split("/")
-                #item_expiry = datetime.date(int(item_expiry[0]), int(item_expiry[1]), int(item_expiry[2]))
-                #^^^
             exp_date = ""
             date_formats = ["%d/%m/%y","%d/%m/%Y","%d-%m-%y","%d-%m-%Y","%d.%m.%y","%d.%m.%Y"]
             for date_format in date_formats:
@@ -474,35 +463,35 @@ def edit_stock():
         power_entry.pack(pady=2)
         extra_entries['power'] = power_entry
         
-        def save_edits():
-            try:
-                new_name = name_entry.get().strip()
-                new_price = float(price_entry.get().strip())
-                new_quantity = int(quantity_entry.get().strip())
-                
-                #reconstruct string
-                if item_type == "Regular Product" or item_type == "product":
-                    new_str = f"Product: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}"
-                elif item_type == "Perishable":
-                    new_str = f"Perishable: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['expiry'].get()}, {extra_entries['temperature'].get()}"
-                elif item_type == "Electronic":
-                    new_str = f"Electronic: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['warranty'].get()}mo, {extra_entries['power'].get()}W"
-                    
-                stock_list.delete(selected_index)
-                stock_list.insert(selected_index, new_str)
-                
+    def save_edits():
+        try:
+            new_name = name_entry.get().strip()
+            new_price = float(price_entry.get().strip())
+            new_quantity = int(quantity_entry.get().strip())
+            
+            #reconstruct string
+            if item_type == "Regular Product" or item_type == "product":
+                new_str = f"Product: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}"
+            elif item_type == "Perishable":
+                new_str = f"Perishable: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['expiry'].get()}, {extra_entries['temperature'].get()}"
+            elif item_type == "Electronic":
+                new_str = f"Electronic: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['warranty'].get()}mo, {extra_entries['power'].get()}W"
+                  
+            stock_list.delete(selected_index)
+            stock_list.insert(selected_index, new_str)
+
             #update background if low stock
-                if new_quantity <= 5:
-                    stock_list.itemconfig(selected_index, bg="red")
-                else:
-                    stock_list.itemconfig(selected_index, bg="white")
-                    
-                status.config(text="Stock item updated successfully.", foreground="green")
-                writeLog(f"Edited item: {item_name} to {new_name}")
-                edit_window.destroy()
-            except ValueError:
-                status.config(text="Please ensure price is a number and quantity is a whole number.", foreground="red")
-        ttk.Button(edit_window, text="Save Changes", command=save_edits).pack(pady=10)
+            if new_quantity <= 5:
+                stock_list.itemconfig(selected_index, bg="red")
+            else:
+                stock_list.itemconfig(selected_index, bg="white")
+            
+            status.config(text="Stock item updated successfully.", foreground="green")
+            writeLog(f"Edited item: {item_name} to {new_name}")
+            edit_window.destroy()
+        except ValueError:
+            status.config(text="Please ensure price is a number and quantity is a whole number.", foreground="red")
+    ttk.Button(edit_window, text="Save Changes", command=save_edits).pack(pady=10)
 
 
 
