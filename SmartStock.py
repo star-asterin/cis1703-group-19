@@ -1,8 +1,3 @@
-#PLAN
-#Write the stockmanagement
-#Code stock alerts for low stock and expiry
-#Add a section for value calculations as well as transaction history
-
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
@@ -396,7 +391,7 @@ def remove_stock():
 # Add event to logs
     writeLog(f"Removed item: {item_name}")
 
-# Function for editing stock here
+# Function for editing stock
 def edit_stock():
     selected_index = stock_list.curselection()
     if not selected_index:
@@ -494,19 +489,7 @@ def edit_stock():
     ttk.Button(edit_window, text="Save Changes", command=save_edits).pack(pady=10)
 
 
-
-
-
-
-#function to display low stock warning here
-# angel suggests utilising the status.config 
-
-
-#function to display warning for expiring stock here
-#angel suggests utilising the status.config 
-
-
-#function for total cost of stock here
+#function for total cost of stock
 def calculate_total_cost():
     total_price = 0
     item_list = list(stock_list.get(0, tk.END))
@@ -526,18 +509,8 @@ total_cost_label.pack()
 
 total_cost_button = ttk.Button(root, text="Calculate Total Cost", command=calculate_total_cost)
 total_cost_button.pack()
-#function for transaction history logs here
 
-
-
-#separate section for the 'health' of the stock summary here
-
-#
-#
-#
 # file persistence and logging - Kostya
-
-
 # Variable that tracks the current working inventory to prevent mis-overwrites
 curSavePath = "inventorySave.json"
 
@@ -627,7 +600,7 @@ def loadDefaultInventory(event=None):
 
 # Reset working inventory to default one
         curSavePath = "inventorySave.json"
-        status.config(text="Default inventory loaded from program folder", foreground="green")
+        status.config(text="Default inventory loaded from program folder.", foreground="green")
     except FileNotFoundError:
         status.config(text="Failed to load default inventory. Please Save one first.)", foreground="red")
 # Add event to logs
@@ -809,10 +782,6 @@ def summonHealthReport():
         if quantity <= 5:
             lowStockCount += 1
             lowStockCountList.append(itemName)
-
-        # except (IndexError, ValueError):
-        #     # Skip any entries that can't be parsed cleanly
-        #     pass
 
     # Sjummon the report popup window
     healthReportWindow = tk.Toplevel(root)
