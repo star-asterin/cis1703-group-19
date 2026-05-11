@@ -12,6 +12,7 @@ from datetime import datetime, date
 root=tk.Tk()
 root.title("SmartStock")
 root.geometry("420x540")
+root.minsize(420,540)
 
 default_font = ("Arial", 12)
 label_font = ("Arial", 11)
@@ -68,6 +69,7 @@ def add_stock_window():
     add_window = tk.Toplevel(root)
     add_window.title("Add Stock")
     add_window.geometry("420x480")
+    add_window.minsize(300,400)
 
     add_window.columnconfigure(0, weight=1)
     add_window.columnconfigure(1, weight=1)
@@ -419,6 +421,7 @@ def edit_stock():
     edit_window = tk.Toplevel(root)
     edit_window.title(f"Edit Stock Item {item_id}")
     edit_window.geometry("300x400")
+    edit_window.minsize(180,310)
 
     ttk.Label(edit_window, text=f"Editing {item_type} (ID: {item_id})", font=("arial", 10, "bold")).pack(pady=10)
     ttk.Label(edit_window, text="Name: ").pack()
@@ -688,7 +691,8 @@ def checkLogs():
     """
     log_window = tk.Toplevel(root)
     log_window.title("Transaction History")
-    log_window.geometry("520x400")
+    log_window.geometry("520x500")
+    log_window.minsize(520,510)
 
     ttk.Label(log_window, text="Transaction History", font=("Arial", 12, "bold")).pack(pady=(10, 5))
 
@@ -814,58 +818,82 @@ def summonHealthReport():
         #     # Skip any entries that can't be parsed cleanly
         #     pass
 
-    # Sjummon the report popup window
+    # Summon the report popup window
     healthReportWindow = tk.Toplevel(root)
     healthReportWindow.title("Inventory At A Glance")
-    healthReportWindow.geometry("350x550")
+    healthReportWindow.geometry("330x500")
+
+    healthReportWindow.minsize(330,400)
+
+    frame = ttk.Frame(healthReportWindow)
+    frame.pack(fill=tk.BOTH, expand=1)
+
+    x_scroll = ttk.Frame(frame)
+    x_scroll.pack(fill=tk.X, side=tk.BOTTOM)
+
+    canvas = tk.Canvas(frame)
+    canvas.pack(side=tk.LEFT,fill=tk.BOTH,expand=1)
+    
+    scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
+    scrollbar.pack(side="right",fill="y")
+
+    sidescroll = ttk.Scrollbar(x_scroll, orient="horizontal", command=canvas.xview)
+    sidescroll.pack(side="bottom", fill="x")
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.configure(xscrollcommand=sidescroll.set)
+    canvas.bind("<Configure>", lambda e: canvas.config(scrollregion=canvas.bbox(tk.ALL)))
+
+    second_frame = ttk.Frame(canvas)
+    canvas.create_window((0,0), window=second_frame, anchor="nw")
 
     # Report title 4 window
-    ttk.Label(healthReportWindow, text="Inventory Summary", font=("Arial", 12, "bold")).pack(pady=10)
+    ttk.Label(second_frame, text="Inventory Summary", font=("Arial", 12, "bold")).pack(pady=10)
 
     # DISPLAY total item count
-    ttk.Label(healthReportWindow, text=f"Total Items: {itemsListCount}", font=("Arial", 11)).pack(pady=(5, 0))
+    ttk.Label(second_frame, text=f"Total Items: {itemsListCount}", font=("Arial", 11)).pack(pady=(5, 0))
 
     # Show percentage breakdown by product type if there are anyit
     if itemsListCount > 0:
         percentagePerishables = (perishablesCount / itemsListCount) * 100
         percentageElectronics = (electronicsCount / itemsListCount) * 100
         percentageDefaults = (defaultsCount / itemsListCount) * 100
-        ttk.Label(healthReportWindow,
+        ttk.Label(second_frame,
                  text=f"{percentageDefaults:.1f}% Regular  |  {percentagePerishables:.1f}% Perishable  |  {percentageElectronics:.1f}% Electronic",
                  font=("Arial", 10), foreground="gray").pack(pady=(0, 5))
 
     # Show low stock count in red if any items are low, black otherwise
     lowStockLabelColor = "red" if lowStockCount > 0 else "black"
-    ttk.Label(healthReportWindow, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), foreground=lowStockLabelColor).pack(pady=(5, 0))
+    ttk.Label(second_frame, text=f"Low Stock Alerts: {lowStockCount}", font=("Arial", 11), foreground=lowStockLabelColor).pack(pady=(5, 0))
 
     # If there are low stock items, list each one by name
     if lowStockCountList:
-        ttk.Label(healthReportWindow, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
+        ttk.Label(second_frame, text="Currently low on:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
         for name in lowStockCountList:
-            ttk.Label(healthReportWindow, text=f"  • {name}", font=("Arial", 10), foreground="red").pack()
+            ttk.Label(second_frame, text=f"  • {name}", font=("Arial", 10), foreground="red").pack()
 
     if expiringStockList:
-        ttk.Label(healthReportWindow,text="Expiring Stock:",font=label_font).pack(pady=(2,0))
+        ttk.Label(second_frame,text="Expiring Stock:",font=label_font).pack(pady=(2,0))
         for name in expiringStockList:
-            ttk.Label(healthReportWindow, text=f"Item: {name} days until expiry date").pack()
+            ttk.Label(second_frame, text=f"Item: {name} days until expiry date").pack()
     if expiredStockList:
-        ttk.Label(healthReportWindow,text="Expired Stock:",font=label_font).pack(pady=(2,0))
+        ttk.Label(second_frame,text="Expired Stock:",font=label_font).pack(pady=(2,0))
         for name in expiredStockList:
-            ttk.Label(healthReportWindow, text=f"Item: {name} days past expiry date").pack()
+            ttk.Label(second_frame, text=f"Item: {name} days past expiry date").pack()
 
     # Show the total combined stock value
-    ttk.Label(healthReportWindow, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
+    ttk.Label(second_frame, text=f"\nTotal Value: £{totalValue:.2f}", font=("Arial", 11)).pack(pady=(10, 0))
 
     # Show a per-item value breakdown sorted from highest to lowest value
     if totalValue > 0 and category2valueMap:
-        ttk.Label(healthReportWindow, text="Value breakdown:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
+        ttk.Label(second_frame, text="Value breakdown:", font=("Arial", 10, "italic")).pack(pady=(2, 0))
         for name, val in sorted(category2valueMap.items(), key=lambda x: x[1], reverse=True):
             # Calculate what percentage of total value this item represents
             percentage = (val / totalValue) * 100
-            ttk.Label(healthReportWindow, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
+            ttk.Label(second_frame, text=f"  • {name}: {percentage:.1f}%  (£{val:.2f})",
                      font=("Arial", 10)).pack()
                      
-    ttk.Button(healthReportWindow, text="Close Report Window", command=healthReportWindow.destroy).pack(pady=3)
+    ttk.Button(second_frame, text="Close Report Window", command=second_frame.destroy).pack(pady=3)
 
 
 # Button that opens the health report window
