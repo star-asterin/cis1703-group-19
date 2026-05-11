@@ -1,6 +1,10 @@
 [
-    "Product: 000, kostya, \u00a339.99, x31",
-    "Perishable: 001, kostya_eggs, \u00a3149.00, x3, 13/03/2028, 38\u00b0C",
-    "Electronic: 002, kostya_toaster, \u00a3499.00, x9, 3mo, 800W",
-    "Electronic: 003, kostya_tv, \u00a3499.00, x1, 3mo, 800W"
+    "Product: 000, A4 paper (100 pcs box), \u00a39.99, x91",
+    "Product: 001, Pencil box, \u00a34.99, x38",
+    "Product: 002, Titanium Cube, \u00a3399.99, x1",
+    "Product: 003, JoJo's Bizarre Adventure Episode 3 DVD, \u00a339.99, x4",
+    "Electronic: 004, PlayStation 2 (Fortnite Edition), \u00a3199.99, x8, 36mo, 250W",
+    "Perishable: 005, Mackerel tails (1 kilogram), \u00a37.99, x3840, 13/05/2026, 45\u00b0C",
+    "Perishable: 006, Hammed Burger, \u00a32.99, x17, 13/12/2026, 18\u00b0C",
+    "Perishable: 007, Ice Cube (Melted), \u00a30.99, x3, 10/05/2025, 5\u00b0C"
 ]

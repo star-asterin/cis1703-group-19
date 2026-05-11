@@ -94,5 +94,57 @@
     {
         "timestamp": "2026-05-10 18:47:34",
         "action": "Edited item: kostya_tv to kostya_tv"
+    },
+    {
+        "timestamp": "2026-05-11 15:17:24",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-11 15:17:37",
+        "action": "Saved inventory to [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-11 15:17:49",
+        "action": "Loaded inventory from [/Users/kostyamac/Documents/1738 1 1 wow crazy.json]"
+    },
+    {
+        "timestamp": "2026-05-11 15:17:53",
+        "action": "Loaded default inventory [inventorySave.json]"
+    },
+    {
+        "timestamp": "2026-05-11 15:18:48",
+        "action": "Added item: A4 paper (100 pcs box)"
+    },
+    {
+        "timestamp": "2026-05-11 15:19:11",
+        "action": "Added item: Pencil box"
+    },
+    {
+        "timestamp": "2026-05-11 15:19:52",
+        "action": "Added item: Titanium Cube"
+    },
+    {
+        "timestamp": "2026-05-11 15:20:25",
+        "action": "Added item: JoJo's Bizarre Adventure Episode 3 DVD"
+    },
+    {
+        "timestamp": "2026-05-11 15:21:17",
+        "action": "Added item: PlayStation 2 (Fortnite Edition)"
+    },
+    {
+        "timestamp": "2026-05-11 15:22:32",
+        "action": "Added item: Mackerel tails (1 kilogram)"
+    },
+    {
+        "timestamp": "2026-05-11 15:23:30",
+        "action": "Added item: Hammed Burger"
+    },
+    {
+        "timestamp": "2026-05-11 15:24:41",
+        "action": "Added item: Ice Cube (Melted)"
+    },
+    {
+        "timestamp": "2026-05-11 15:25:41",
+        "action": "Saved inventory to [inventorySave.json]"
     }
 ]
