@@ -157,8 +157,8 @@ def add_stock_window():
             electronic_opts.grid(row=4,column=1,columnspan=2)
             perishable_opts.grid_forget()
         else:
-            electronic_opts.pack_forget()
-            perishable_opts.pack_forget()
+            electronic_opts.grid_forget()
+            perishable_opts.grid_forget()
         
     def close_add_stock_window():
         add_window.destroy()
