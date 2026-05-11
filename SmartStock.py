@@ -48,14 +48,14 @@ class Electronic(Product):
 
 #counter for incrementing product ID when a new item is created
 class Counter:
-    def __init__(self):
-        self.value = 0
-    
+    def __init__(self, value):
+        self.value = value
+   
     def increment(self):
         self.value += 1
         return self.value
 
-counter = Counter()
+counter = Counter(value=0)
 
 btn_frame = ttk.Frame(root)
 btn_frame.pack(pady=5)
@@ -206,6 +206,7 @@ def add_stock():
     #Now the only purpose of add_stock is to create a new object, using data from the "add_stock_window" function
     #Core attributes
     try:
+        counter.value = stock_list.size()
         item_type = opt.get().strip()
         item_id = f"{counter.value:03}"
         global item_name
@@ -214,7 +215,7 @@ def add_stock():
         item_quantity = stock_quantity.get().strip()
         
         if not item_name:
-            add_status.config(text="Please enter a stock item name", foreground= "red")
+            add_status.config(text="Please enter a stock item name.", foreground= "red")
             stock_name.focus_set()
             return
         if not item_price:
@@ -786,6 +787,13 @@ def summonHealthReport():
             year = parts[2]; month = parts[1]; day = parts[0]
             day = int(day); month = int(month); year = int(year)
             expiry_date = date(day=day,month=month,year=year)
+            if len(str(year)) == 4:
+                expiry_date = date(day=day,month=month,year=year)
+            else:
+                newYear = f"20{year}"
+                newYear = int(newYear)
+                print(newYear)
+                expiry_date = date(day=day,month=month,year=newYear)
             current_date = date.today()
             days_until_expiry = (expiry_date - current_date).days
 
