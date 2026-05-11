@@ -470,7 +470,7 @@ def edit_stock():
             new_quantity = int(quantity_entry.get().strip())
             
             #reconstruct string
-            if item_type == "Regular Product" or item_type == "product":
+            if item_type == "Regular Product" or item_type == "Product":
                 new_str = f"Product: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}"
             elif item_type == "Perishable":
                 new_str = f"Perishable: {item_id}, {new_name}, £{new_price:.2f}, x{new_quantity}, {extra_entries['expiry'].get()}, {extra_entries['temperature'].get()}"
